@@ -10,36 +10,61 @@ def mutually_exclusive(arr1, arr2):
 
 
 #TODO: Fix
-def test_edge_capacities(G, min_capacity):
-    # Create a copy of the graph to avoid modifying the original
-    # Create a copy of the graph to avoid modifying the original
-    H = G.copy()
+def ensure_demand_met(G, demands):
+    """
+    Ensures that every node demand is met in the undirected graph G by converting it
+    to a directed graph and adding a super-source and super-sink to balance demands.
+    Parameters:
+    G (nx.Graph): Undirected graph with edge capacities and costs.
+    demands (dict): Dictionary with node as key and demand as value.
+                    Positive values represent demand, and negative values represent supply.
+    Returns:
+    dict: Flow on each edge.
+    float: Total cost of the flow.
+    """
+    # Convert undirected graph to directed graph
+    DG = nx.DiGraph()
+    for u, v, data in G.edges(data=True):
+        DG.add_edge(u, v, capacity=data.get('capacity', float('inf')), weight=data.get('weight', 0))
+        DG.add_edge(v, u, capacity=data.get('capacity', float('inf')), weight=data.get('weight', 0))
 
-    # Add source and sink nodes
-    H.add_node('source')
-    H.add_node('sink')
+    # Add a super-source and super-sink to balance demands
+    super_source = 'super_source'
+    super_sink = 'super_sink'
+    DG.add_node(super_source, demand=0)
+    DG.add_node(super_sink, demand=0)
 
-    # Connect source to all nodes and all nodes to sink
-    for node in G.nodes():
-        H.add_edge('source', node, capacity=min_capacity)
-        H.add_edge(node, 'sink', capacity=min_capacity)
+    total_demand = 0
+    for node, demand in demands.items():
+        if demand > 0:
+            DG.add_edge(super_source, node, capacity=demand, weight=0)
+            total_demand += demand
+        elif demand < 0:
+            DG.add_edge(node, super_sink, capacity=-demand, weight=0)
+            total_demand += demand
 
-    # Convert the undirected graph to a directed graph
-    H_directed = H.to_directed()
+        DG.nodes[node]['demand'] = demand
 
-    # Set capacities for both directions of each edge
-    for u, v, data in H_directed.edges(data=True):
-        if 'capacity' not in data:
-            H_directed[u][v]['capacity'] = min_capacity
-            H_directed[v][u]['capacity'] = min_capacity
+    # Balance the total demand and supply
+    DG.nodes[super_source]['demand'] = -total_demand
+    DG.nodes[super_sink]['demand'] = total_demand
 
-    # Calculate maximum flow
-    flow_value, _ = nx.maximum_flow(H_directed, 'source', 'sink')
+    # Use the network simplex algorithm to find the minimum cost flow that satisfies demands
+    flow_dict, cost = nx.network_simplex(DG)
 
-    # Check if flow value equals expected value
-    expected_flow = len(G.nodes()) * min_capacity
-    return flow_value == expected_flow
+    # Remove the super-source and super-sink flows from the result
+    flow_dict.pop(super_source, None)
+    for flow in flow_dict.values():
+        flow.pop(super_sink, None)
 
+    # Check if all demands are met
+    for node in demands:
+        net_flow = sum(flow_dict.get((u, node), 0) for u in DG.predecessors(node)) - \
+                   sum(flow_dict.get((node, v), 0) for v in DG.successors(node))
+        if net_flow != demands[node]:
+            raise ValueError(f"Demand not met at node {node}. Net flow: {net_flow}, Demand: {demands[node]}")
+
+    return flow_dict, cost
 
 def compute_cap_link_failures(G, minCap):
     # Step 1: Compute link failure scenarios
