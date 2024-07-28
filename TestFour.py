@@ -1,7 +1,7 @@
 import networkx as nx
+import matplotlib.pyplot as plt
 
-
-def ensure_demand_and_minimum_flow_met(G, demands, minimum_flow):
+def ensure_demand_and_minimum_flow_met(G, demands, minimum_flow, maxCost):
     """
     Ensures that every node demand is met and the graph has at least the specified minimum flow.
 
@@ -17,15 +17,17 @@ def ensure_demand_and_minimum_flow_met(G, demands, minimum_flow):
     # Convert undirected graph to directed graph
     DG = nx.DiGraph()
     for u, v, data in G.edges(data=True):
-        DG.add_edge(u, v, capacity=data.get('weight', float('inf')), weight=data.get('capacity', 0))
-        DG.add_edge(v, u, capacity=data.get('weight', float('inf')), weight=data.get('capacity', 0))
+        DG.add_edge(u, v, capacity=data.get('capacity', 0), weight=data.get('weight', 0))
+        DG.add_edge(v, u, capacity=data.get('capacity', 0), weight=data.get('weight', 0))
 
     # Add a super-source and super-sink to balance demands
+    dgDemands=demands
     super_source = 'super_source'
     super_sink = 'super_sink'
     DG.add_node(super_source)
     DG.add_node(super_sink)
 
+    #TODO: Fix
     total_demand = 0
     for node, demand in demands.items():
         if demand > 0:
@@ -38,10 +40,21 @@ def ensure_demand_and_minimum_flow_met(G, demands, minimum_flow):
     DG.nodes[super_source]['demand'] = -total_demand
     DG.nodes[super_sink]['demand'] = total_demand
 
+    pos = nx.spring_layout(DG)
+    nx.draw(DG, pos, with_labels=True)
+    edge_labels = nx.get_edge_attributes(DG, 'capacity')
+    nx.draw_networkx_edge_labels(DG, pos, edge_labels=edge_labels)
+    plt.axis('off')
+    plt.show()
+    
+    for nodes in DG.nodes():
+        print(nodes)
+
     # Use the network simplex algorithm to find the minimum cost flow that satisfies demands
     try:
         flow_cost, flow_dict = nx.network_simplex(DG)
     except nx.NetworkXUnfeasible:
+        print("Demands not met")
         return False
 
 
@@ -50,9 +63,12 @@ def ensure_demand_and_minimum_flow_met(G, demands, minimum_flow):
     print("total flow", total_flow)
     # Check if the total flow is at least the minimum flow
     if total_flow < minimum_flow:
+        print("Not enough flow")
         return False
-
-    return True, flow_cost
+    if flow_cost > maxCost:
+        print("Cost too high", flow_cost)
+        return False
+    return True
 
 
 # Example usage
@@ -69,8 +85,8 @@ if __name__ == "__main__":
     # Define demands
     demands = {
         'A': 15,  # Supply node
-        'B': 0,  # Transit node
-        'C': -5,  # Transit node
+        'B': 2,  # Transit node
+        'C': -7,  # Transit node
         'D': -10  # Demand node
     }
 
@@ -78,6 +94,6 @@ if __name__ == "__main__":
     minimum_flow = 13
 
     # Ensure demands and minimum flow are met
-    result = ensure_demand_and_minimum_flow_met(G, demands, minimum_flow)
+    result = ensure_demand_and_minimum_flow_met(G, demands, minimum_flow, 20)
 
     print("Are demands and minimum flow met?", result)

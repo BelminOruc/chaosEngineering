@@ -9,30 +9,30 @@ def mutually_exclusive(arr1, arr2):
     return not bool(set1.intersection(set2))
 
 
-#TODO: Fix
-def ensure_demand_met(G, demands):
+def ensure_demand_and_minimum_flow_met(G, demands, minimum_flow, maxCost):
     """
-    Ensures that every node demand is met in the undirected graph G by converting it
-    to a directed graph and adding a super-source and super-sink to balance demands.
+    Ensures that every node demand is met and the graph has at least the specified minimum flow.
+
     Parameters:
-    G (nx.Graph): Undirected graph with edge capacities and costs.
+    G (nx.Graph): Undirected graph with edge weights and capacities.
     demands (dict): Dictionary with node as key and demand as value.
                     Positive values represent demand, and negative values represent supply.
+    minimum_flow (float): The minimum total flow that must be met.
+
     Returns:
-    dict: Flow on each edge.
-    float: Total cost of the flow.
+    bool: True if demands are met and total flow is at least minimum_flow, False otherwise.
     """
     # Convert undirected graph to directed graph
     DG = nx.DiGraph()
     for u, v, data in G.edges(data=True):
-        DG.add_edge(u, v, capacity=data.get('capacity', float('inf')), weight=data.get('weight', 0))
-        DG.add_edge(v, u, capacity=data.get('capacity', float('inf')), weight=data.get('weight', 0))
+        DG.add_edge(u, v, capacity=data.get('capacity', 0), weight=data.get('weight', 0))
+        DG.add_edge(v, u, capacity=data.get('capacity', 0), weight=data.get('weight', 0))
 
     # Add a super-source and super-sink to balance demands
     super_source = 'super_source'
     super_sink = 'super_sink'
-    DG.add_node(super_source, demand=0)
-    DG.add_node(super_sink, demand=0)
+    DG.add_node(super_source)
+    DG.add_node(super_sink)
 
     total_demand = 0
     for node, demand in demands.items():
@@ -41,32 +41,32 @@ def ensure_demand_met(G, demands):
             total_demand += demand
         elif demand < 0:
             DG.add_edge(node, super_sink, capacity=-demand, weight=0)
-            total_demand += demand
-
-        DG.nodes[node]['demand'] = demand
 
     # Balance the total demand and supply
     DG.nodes[super_source]['demand'] = -total_demand
     DG.nodes[super_sink]['demand'] = total_demand
 
     # Use the network simplex algorithm to find the minimum cost flow that satisfies demands
-    flow_dict, cost = nx.network_simplex(DG)
+    try:
+        flow_cost, flow_dict = nx.network_simplex(DG)
+    except nx.NetworkXUnfeasible:
+        print("Demands not met")
+        return False
 
-    # Remove the super-source and super-sink flows from the result
-    flow_dict.pop(super_source, None)
-    for flow in flow_dict.values():
-        flow.pop(super_sink, None)
 
-    # Check if all demands are met
-    for node in demands:
-        net_flow = sum(flow_dict.get((u, node), 0) for u in DG.predecessors(node)) - \
-                   sum(flow_dict.get((node, v), 0) for v in DG.successors(node))
-        if net_flow != demands[node]:
-            raise ValueError(f"Demand not met at node {node}. Net flow: {net_flow}, Demand: {demands[node]}")
+    # Calculate the total flow from super_source
+    total_flow = sum(flow_dict[super_source].values())
+    print("total flow", total_flow)
+    # Check if the total flow is at least the minimum flow
+    if total_flow < minimum_flow:
+        print("Not enough flow")
+        return False
+    if flow_cost > maxCost:
+        print("Cost too high", flow_cost)
+        return False
+    return True
 
-    return flow_dict, cost
-
-def compute_cap_link_failures(G, minCap):
+def compute_cap_link_failures(G, demands, minCap, maxCost):
     # Step 1: Compute link failure scenarios
     link_failures = []
 
@@ -94,12 +94,10 @@ def compute_cap_link_failures(G, minCap):
                     print("Tree2: ")
                     print(tree2.edges)
                     #testing if both trees have the necessary capacitys for all edges
-                    test = test_edge_capacities(tree1, minCap)
-                    print("Tree 1 Capacity enough?")
-                    print(test)
-                    test = test_edge_capacities(tree2, minCap)
-                    print("Tree 2 Capacity enough?")
-                    print(test)
+                    test = ensure_demand_and_minimum_flow_met(tree1, demands, minCap, maxCost)
+                    print("Tree 1 valid?", test)
+                    test = ensure_demand_and_minimum_flow_met(tree2, demands, minCap, maxCost)
+                    print("Tree 2 valid?", test)
                     test = mutually_exclusive(tree1.edges, tree2.edges)
                     print(test)
                     print("----------------------------------------------------------------")
@@ -108,7 +106,7 @@ def compute_cap_link_failures(G, minCap):
         except:
             break
 #TODO: Anpassen
-    if (test == True and sumCap1 >= minCap and sumCap2 >= minCap):
+    if (test == True):
         # Step 3: Fail links not in T1 and T2
         link_failures.append(list(set(G.edges) - set(tree1.edges)))
         link_failures.append(list(set(G.edges) - set(tree2.edges)))
@@ -119,7 +117,6 @@ def compute_cap_link_failures(G, minCap):
         it2 = nx.algorithms.tree.mst.SpanningTreeIterator(G, weight='weight')
         iter(it2)
         while True:
-
             # Step 7: Compute minimum weight spanning tree (MST)
             try:
                 tree = next(it2)
@@ -134,10 +131,9 @@ def compute_cap_link_failures(G, minCap):
 
             # Step 9: Calculate sum of new edge failures
             lambda_sum = sum(edge_weights[e] for e in failed_links)
-            cap_sum = sum(edge_limit[e] for e in failed_links)
+            test = ensure_demand_and_minimum_flow_met(tree, demands, minCap, maxCost)
 
-            if cap_sum > minCap:
-
+            if test == True:
                 # Step 10: Set weights of failed links to 0
                 for e in failed_links:
                     edge_weights[e] = 0
@@ -151,13 +147,6 @@ def compute_cap_link_failures(G, minCap):
 
 
 G = nx.Graph()
-G.add_node("a", demand=-5)
-G.add_node("b", demand=-5)
-G.add_node("c", demand=-5)
-G.add_node("d", demand=-5)
-G.add_node("e", demand=-5)
-G.add_node("x", demand=-5)
-G.add_node("y", demand=-5)
 G.add_edge("x", "a", capacity=6.0)
 G.add_edge("x", "b", capacity=1.0)
 G.add_edge("a", "c", capacity=3.0)
@@ -167,10 +156,20 @@ G.add_edge("d", "e", capacity=2.0)
 G.add_edge("c", "y", capacity=2.0)
 G.add_edge("e", "y", capacity=3.0)
 
+demands = {
+        'a': 15,  # Supply node
+        'b': 0,  # Transit node
+        'c': -5,  # Transit node
+        'd': -10,  # Demand node
+        'e': 0,  # Transit node
+        'x': -5,  # Transit node
+        'y': 5  # Demand node
+    }
+
 pos = nx.spring_layout(G)
 nx.draw(G, pos, with_labels=True)
 # Draw edge labels with weights
-link_failure_scenarios = compute_cap_link_failures(G,22)
+link_failure_scenarios = compute_cap_link_failures(G, demands,4, 50)
 print(link_failure_scenarios)
 edge_labels = nx.get_edge_attributes(G, 'capacity')
 nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
