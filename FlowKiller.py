@@ -1,6 +1,12 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
+import parser
+
+
+#Most current version of the greedy algorithm
+# Computes a minimum flow, a max cost and checks for all demands
+
 def compute_cap_link_failures(G, demands, max_cost, min_cap):
     # Step 1: Compute link failure scenarios
     link_failures = []
@@ -217,9 +223,12 @@ def mutually_exclusive(arr1, arr2):
 
 #---------------------------------------------------TEST--------------------------------------------------
 
-
-
+file = 'nobel-germany.xml'
+G= parser.read_sndlib_topology(file)
+print("test")
+print(G.edges)
 # Add Edges
+'''
 G = nx.Graph()
 G.add_edge("x", "a", capacity=6.0, weight=1.0)
 G.add_edge("x", "b", capacity=6.0, weight=1.0)
@@ -239,7 +248,7 @@ demands = {
     'e': 1,  # Transit node
     'x': 1,  # Transit node
     'y': 1  # Demand node
-}
+}'''
 
 min_cap = 0  # Minimum capacity for edges
 max_cost = 30  # Maximum cost constraint
@@ -247,8 +256,8 @@ max_cost = 30  # Maximum cost constraint
 # Draw Graph
 pos = nx.spring_layout(G)
 nx.draw(G, pos, with_labels=True)
-link_failure_scenarios = compute_cap_link_failures(G, demands, max_cost, min_cap)
-print(link_failure_scenarios)
+#link_failure_scenarios = compute_cap_link_failures(G, demands, max_cost, min_cap)
+#print(link_failure_scenarios)
 edge_labels = nx.get_edge_attributes(G, 'capacity')
 nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
 plt.axis('off')
