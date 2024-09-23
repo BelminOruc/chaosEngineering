@@ -1,30 +1,11 @@
 import networkx as nx
+from matplotlib import pyplot as plt
+
 import helpers
-'''
-Algorithm BacktrackingLinkKilling(N = (V, E), current_set)
-    if current_edge > |E| then
-        if isConnected(V, E w.o. current_set) then
-            return current_set // Valid set of killed links
-
-        return ∅ // Not valid
-
-    // Include this edge in the current set to kill it
-    current_set.add(E[current_edge])
-    result_with_edge = BacktrackingLinkKilling(N, current_set, current_edge + 1)
-
-    // Exclude this edge from the current set and try again
-    current_set.remove(E[current_edge])
-    result_without_edge = BacktrackingLinkKilling(N, current_set, current_edge + 1)
-
-    return bestResult(result_with_edge, result_without_edge)
-'''
-
-
-
 
 def backtrack_killer(G, demands, max_cost, min_cap):
     """Backtracking algorithm to find all edges that can be killed while maintaining connectivity."""
-    original_edges = list(G.edges())
+    original_edges = list(G.edges(data=True))
     killed_edge_sets = []
     all_edges_killed = set()
 
@@ -32,23 +13,26 @@ def backtrack_killer(G, demands, max_cost, min_cap):
         nonlocal killed_edge_sets, all_edges_killed
 
         for edge in original_edges:
-            if edge not in current_set:
-                temp_graph.remove_edge(*edge)
-                current_set.add(edge)
+            if edge[:2] not in current_set:
+                # Store edge attributes before removing
+                edge_data = temp_graph.get_edge_data(*edge[:2])
+                temp_graph.remove_edge(*edge[:2])
+                current_set.add(edge[:2])
 
-                if helpers.check_requirements(temp_graph, demands, max_cost, min_cap ):
+                if helpers.check_requirements(temp_graph, demands, max_cost, min_cap):
                     killed_edge_sets.append(list(current_set))
                     all_edges_killed.update(current_set)
-                    if all_edges_killed == set(original_edges):
+                    if all_edges_killed == set(edge[:2] for edge in original_edges):
                         return  # Stop recursion if all edges have been killed at least once
                     recursive_remove(temp_graph, current_set)
 
-                current_set.remove(edge)
-                temp_graph.add_edge(*edge)
+                current_set.remove(edge[:2])
+                # Restore edge with its attributes
+                temp_graph.add_edge(*edge[:2], **edge_data)
 
     recursive_remove(G.copy(), set())
-
-    return killed_edge_sets
+    print(killed_edge_sets)
+    return helpers.count_inner_lists(killed_edge_sets)
 
 file = 'nobel-germany.xml'
 #G = parser.read_sndlib_topology(file)
@@ -76,12 +60,5 @@ demands = {
 min_cap = 0  # Minimum capacity for edges
 max_cost = 30  # Maximum cost constraint
 
-# Draw Graph
-pos = nx.spring_layout(G)
-nx.draw(G, pos, with_labels=True)
 link_failure_scenarios = backtrack_killer(G, demands, max_cost, min_cap)
 print(link_failure_scenarios)
-edge_labels = nx.get_edge_attributes(G, 'capacity')
-nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-plt.axis('off')
-plt.show()

@@ -19,7 +19,8 @@ def clever_brute_killer(G, demands, max_cost, min_cap):
                 killed_links.append(list(subset))
                 killed_links = remove_smaller_tuples(killed_links)
                 killed_links = remove_redundant_sublists(killed_links)
-    return killed_links
+    print(killed_links)
+    return  helpers.count_inner_lists(killed_links)
 
 
 def remove_redundant_sublists(lst):
@@ -95,10 +96,5 @@ demands = {
 min_cap = 0  # Minimum capacity for edges
 max_cost = 30  # Maximum cost constraint
 
-# Draw Graph
-pos = nx.spring_layout(G)
-nx.draw(G, pos, with_labels=True)
 link_failure_scenarios = clever_brute_killer(G, demands, max_cost, min_cap)
 print(link_failure_scenarios)
-edge_labels = nx.get_edge_attributes(G, 'capacity')
-nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)

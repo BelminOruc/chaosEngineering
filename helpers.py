@@ -1,4 +1,5 @@
 import networkx as nx
+from matplotlib import pyplot as plt
 
 
 def check_requirements(G, demands, max_cost, min_flow):
@@ -98,7 +99,6 @@ def smallest_maximum_flow(G):
 
     Returns:
     - min_flow: The smallest maximum flow value among edge node pairs through intermediates.
-    - node_pair: The pair of edge nodes with the smallest maximum flow through intermediates.
     """
     edge_nodes = [node for node in G.nodes if is_edge_node(G, node)]
     min_flow = float('inf')
@@ -106,20 +106,16 @@ def smallest_maximum_flow(G):
         for j in range(i + 1, len(edge_nodes)):
             source = edge_nodes[i]
             sink = edge_nodes[j]
+            # Use a copy of the graph for each flow calculation
+            G_temp = G.copy()
             # Check if there's a direct edge between source and sink
-            if G.has_edge(source, sink) or G.has_edge(sink, source):
-                # Temporarily remove the direct edge if it exists
-                G_temp = G.copy()
-                if G_temp.has_edge(source, sink):
-                    G_temp.remove_edge(source, sink)
-                if G_temp.has_edge(sink, source):
-                    G_temp.remove_edge(sink, source)
-                # Calculate maximum flow in the modified graph
-                flow_value, _ = nx.maximum_flow(G_temp, source, sink)
-            else:
-                # Calculate maximum flow in the original graph as there is no direct edge
-                flow_value, _ = nx.maximum_flow(G, source, sink)
-            # Update the min flow and node pair if a smaller flow is found
+            if G_temp.has_edge(source, sink):
+                G_temp.remove_edge(source, sink)
+            if G_temp.has_edge(sink, source):
+                G_temp.remove_edge(sink, source)
+            # Calculate maximum flow in the modified graph
+            flow_value, _ = nx.maximum_flow(G_temp, source, sink)
+            # Update the min flow if a smaller flow is found
             if flow_value < min_flow:
                 min_flow = flow_value
     return min_flow
@@ -135,3 +131,15 @@ def is_edge_node(graph, node):
 def is_connected(graph):
     """Check if the graph is connected."""
     return nx.is_connected(graph)
+
+def count_inner_lists(list_of_lists):
+    """Returns the number of lists in the given list of lists."""
+    return len(list_of_lists)
+
+def show_plot(G):
+    pos = nx.spring_layout(G)
+    nx.draw(G, pos, with_labels=True)
+    edge_labels = nx.get_edge_attributes(G, 'capacity')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+    plt.axis('off')
+    plt.show()

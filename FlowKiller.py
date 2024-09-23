@@ -82,7 +82,7 @@ def compute_cap_link_failures(G, demands, max_cost, min_cap):
                         break
                 if not found_valid_tree:
                     break
-    return link_failures
+    return helpers.count_inner_lists(link_failures)
 
 
 def mutually_exclusive(arr1, arr2):
@@ -122,13 +122,5 @@ demands = {
 
 min_cap = 0  # Minimum capacity for edges
 max_cost = 30  # Maximum cost constraint
-
-# Draw Graph
-pos = nx.spring_layout(G)
-nx.draw(G, pos, with_labels=True)
 link_failure_scenarios = compute_cap_link_failures(G, demands, max_cost, min_cap)
 print(link_failure_scenarios)
-edge_labels = nx.get_edge_attributes(G, 'capacity')
-nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-plt.axis('off')
-plt.show()

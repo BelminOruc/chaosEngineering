@@ -2,22 +2,6 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import helpers
 
-'''
-Algorithm DynamicProgrammingLinkKilling(N = (V, E))
-    dp[i][j] = maximum edges killed in subgraph with first i vertices and j edges
-
-    for i from 1 to |V| do
-        for j from 1 to |E| do
-            dp[i][j] = dp[i-1][j] // Not killing this edge
-
-            // Check if killing this edge maintains connectivity
-            if isConnected(V[1..i], E[1..j] w.o. {E[j]}) then
-                dp[i][j] = max(dp[i][j], dp[i-1][j-1] + 1)
-
-    return dp[|V|][|E|]
-'''
-
-
 # Fill the DP table
 def dynamic_killer(G, demands, max_cost, min_cap):
     """Dynamic Programming algorithm to find all edges that can be killed while maintaining connectivity."""
@@ -51,8 +35,7 @@ def dynamic_killer(G, demands, max_cost, min_cap):
                     if edge_to_remove not in removable_edges[j - 1]:
                         removable_edges[j - 1].append(edge_to_remove)
                 temp_graph.add_edge(*edge_to_remove)  # Restore the edge
-
-    return removable_edges
+    return helpers.count_inner_lists(removable_edges)
 
 
 # Example usage

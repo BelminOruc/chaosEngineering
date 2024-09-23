@@ -1,4 +1,6 @@
 import networkx as nx
+from matplotlib import pyplot as plt
+
 import helpers
 
 
@@ -41,8 +43,8 @@ def iterative_killer(G, demands, max_cost, min_cap):
             remaining_edges.remove(edge)  # Remove them from the list of remaining edges
 
         killed_links.append(iteration_links)
-
-    return killed_links
+    print(killed_links)
+    return helpers.count_inner_lists(killed_links)
 
 # Example usage
 file = 'nobel-germany.xml'
@@ -72,11 +74,5 @@ min_cap = 0  # Minimum capacity for edges
 max_cost = 30  # Maximum cost constraint
 
 # Draw Graph
-pos = nx.spring_layout(G)
-nx.draw(G, pos, with_labels=True)
 link_failure_scenarios = iterative_killer(G, demands, max_cost, min_cap)
 print(link_failure_scenarios)
-edge_labels = nx.get_edge_attributes(G, 'capacity')
-nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-plt.axis('off')
-plt.show()

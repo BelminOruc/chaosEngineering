@@ -1,25 +1,9 @@
 import networkx as nx
 import random
+
+from matplotlib import pyplot as plt
+
 import helpers
-'''
-Algorithm RandomLinkKilling(N = (V, E), iterations)
-    max_killed_links = 0
-    best_killed_set = ∅
-
-    for i from 1 to |E| do
-        for j from 1 to iterations do
-            random_set S = RandomSubset(E / best_killed_set)
-
-            if isConnected(V, E / (best_killed_set ∪ S)) then
-                killed_count = |best_killed_set ∪ S|
-                if killed_count > max_killed_links then
-                    max_killed_links = killed_count
-                    best_killed_set = best_killed_set ∪ S
-
-    return best_killed_set
-'''
-
-
 def random_killer(G, demands, max_cost, min_cap):
     """Random Algorithm to find all edges that can be killed while maintaining connectivity."""
     original_edges = list(G.edges())
@@ -35,7 +19,7 @@ def random_killer(G, demands, max_cost, min_cap):
             temp_graph = G.copy()
             temp_graph.remove_edges_from(random_set)
 
-            if helpers.check_requirements(temp_graph):
+            if helpers.check_requirements(temp_graph, demands, max_cost, min_cap):
                 killed_count = len(best_killed_set.union(random_set))
                 if killed_count > max_killed_links:
                     max_killed_links = killed_count
@@ -47,8 +31,8 @@ def random_killer(G, demands, max_cost, min_cap):
         else:
             killed_edges.extend(best_killed_set)
             original_edges = [edge for edge in original_edges if edge not in best_killed_set]
-
-    return list(killed_edge_sets)
+    print(list(killed_edge_sets))
+    return helpers.count_inner_lists(list(killed_edge_sets))
 
 
 # Example usage
@@ -79,11 +63,5 @@ min_cap = 0  # Minimum capacity for edges
 max_cost = 30  # Maximum cost constraint
 
 # Draw Graph
-pos = nx.spring_layout(G)
-nx.draw(G, pos, with_labels=True)
 link_failure_scenarios = random_killer(G, demands, max_cost, min_cap)
 print(link_failure_scenarios)
-edge_labels = nx.get_edge_attributes(G, 'capacity')
-nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-plt.axis('off')
-plt.show()
