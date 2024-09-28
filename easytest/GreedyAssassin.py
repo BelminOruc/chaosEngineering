@@ -28,7 +28,7 @@ def compute_cap_link_failures(G, minCap):
         test = False
         try:
             tree1 = next(iterator1)
-            print("################################################################")
+            #print("################################################################")
             #how can we reset the iterator?
             iterator2 = nx.algorithms.tree.mst.SpanningTreeIterator(G, weight='weight')
             iter(iterator2)

@@ -44,7 +44,7 @@ def read_sndlib_topology(file):
         demand_elements = document.getElementsByTagName("demand")
         for demand in demand_elements:
             source = demand.getElementsByTagName("source")[0].childNodes[0].data
-            demand_value = float(demand.getElementsByTagName("demandValue")[0].childNodes[0].data)
+            demand_value = round(float(demand.getElementsByTagName("demandValue")[0].childNodes[0].data) / 1000, 3)
             if source not in demands:
                 demands[source] = 0  # Ensure the source node is initialized in demands
             demands[source] += demand_value  # Aggregate demand values for each source node

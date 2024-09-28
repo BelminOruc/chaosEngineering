@@ -1,8 +1,58 @@
 import networkx as nx
 from matplotlib import pyplot as plt
+import logging
+
+logging.basicConfig(filename='analysis.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
 
 def check_requirements(G, demands, max_cost, min_flow):
+    """
+    Check if a flow exists that meets all the node demands with a maximum cost and a minimum flow.
+    Parameters:
+    G (nx.DiGraph): Directed graph with edge capacities and costs.
+    demands (dict): Dictionary with node demands, e.g., {node1: demand1, node2: demand2, ...}
+    max_cost (int): Maximum allowable cost.
+    min_flow (int): Minimum required flow.
+    Returns:
+    bool: True if requirements are met, False otherwise.
+    """
+    # Ensure the graph is directed for flow calculations
+    if not nx.is_connected(G):
+        #logging.info("Graph is not connected")
+        return False
+
+    if not isinstance(G, nx.DiGraph):
+        DG = G.to_directed()
+
+    # Add demand attribute to nodes
+    DG, dg_demands, total_demand = add_sink_node_with_demand(DG, demands)
+    for node, demand in dg_demands.items():
+        DG.nodes[node]['demand'] = demand
+
+    try:
+        # Calculate maximum flow and its cost
+        flow_value, flow_dict = nx.maximum_flow(DG, 'source_node', list(DG.nodes)[0])
+        flow_cost = sum(DG[u][v]['cost'] * flow_dict[u][v] for u in flow_dict for v in flow_dict[u])
+
+        # Check if the total cost exceeds the maximum allowed cost
+        if flow_cost > max_cost:
+            #logging.info("Cost is greater than max cost")
+            return False
+
+        # Check if the total flow is less than the minimum required flow
+        if flow_value < min_flow:
+            #logging.info("Total flow is less than min flow")
+            return False
+
+        # If both conditions are satisfied
+        #logging.info("Network found")
+        return True
+    except nx.NetworkXUnfeasible:
+        #logging.info("No feasible flow exists")
+        return False
+
+
+def old_check_requirements(G, demands, max_cost, min_flow):
     """
     Check if a flow exists that meets all the node demands with a maximum cost and a minimum flow.
     Parameters:
@@ -27,6 +77,7 @@ def check_requirements(G, demands, max_cost, min_flow):
 
         # Check if the total cost exceeds the maximum allowed cost
         if flow_cost > max_cost:
+            print("Cost is greater than max cost")
             return False
 
         # Calculate the total flow through the network
@@ -41,11 +92,14 @@ def check_requirements(G, demands, max_cost, min_flow):
         total_flow = smallest_maximum_flow(G)
         # Check if the total flow is less than the minimum required flow
         if total_flow < min_flow:
+            print("Total flow is less than min flow")
             return False
 
         # If both conditions are satisfied
+        print("Network found")
         return True
     except nx.NetworkXUnfeasible:
+        print("Network Simplex doesnt work")
         # If no feasible flow exists
         return False
 
@@ -132,9 +186,11 @@ def is_connected(graph):
     """Check if the graph is connected."""
     return nx.is_connected(graph)
 
+
 def count_inner_lists(list_of_lists):
     """Returns the number of lists in the given list of lists."""
     return len(list_of_lists)
+
 
 def show_plot(G):
     pos = nx.spring_layout(G)

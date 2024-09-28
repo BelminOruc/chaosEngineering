@@ -9,7 +9,9 @@ def clever_brute_killer(G, demands, max_cost, min_cap):
     killed_links = []
 
     for r in range(1, len(edges) + 1):  # r is the size of the subset
+        print("try")
         for subset in combinations(edges, r):
+            print("trying")
             # Create a new graph without the edges in the subset
             temp_graph = G.copy()
             temp_graph.remove_edges_from(subset)
@@ -17,9 +19,9 @@ def clever_brute_killer(G, demands, max_cost, min_cap):
             # Check if the modified graph is still connected
             if helpers.check_requirements(temp_graph, demands, max_cost, min_cap):
                 killed_links.append(list(subset))
-                killed_links = remove_smaller_tuples(killed_links)
-                killed_links = remove_redundant_sublists(killed_links)
-    print(killed_links)
+                #killed_links = remove_smaller_tuples(killed_links)
+                #killed_links = remove_redundant_sublists(killed_links)
+    #print(killed_links)
     return  helpers.count_inner_lists(killed_links)
 
 
@@ -69,32 +71,3 @@ def remove_smaller_tuples(lst):
 
     return result
 
-
-file = 'nobel-germany.xml'
-#G = parser.read_sndlib_topology(file)
-#print("test")
-#print(G.edges)
-# Add Edges
-
-G = nx.Graph()
-G.add_edge("1", "2", capacity=6.0, weight=1.0)
-G.add_edge("2", "3", capacity=6.0, weight=1.0)
-G.add_edge("2", "4", capacity=6.0, weight=1.0)
-G.add_edge("3", "5", capacity=6.0, weight=1.0)
-G.add_edge("4", "5", capacity=6.0, weight=1.0)
-G.add_edge("1", "3", capacity=6.0, weight=1.0)
-G.add_edge("2", "5", capacity=6.0, weight=1.0)
-# Initialize demands and other parameters
-demands = {
-    '1': 1,  # Supply node
-    '2': 1,  # Transit node
-    '3': 1,  # Transit node
-    '4': 1,  # Demand node
-    '5': 1,  # Transit node
-}
-
-min_cap = 0  # Minimum capacity for edges
-max_cost = 30  # Maximum cost constraint
-
-link_failure_scenarios = clever_brute_killer(G, demands, max_cost, min_cap)
-print(link_failure_scenarios)

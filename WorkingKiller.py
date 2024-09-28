@@ -10,16 +10,18 @@ def find_killable_edges(G, edges_to_consider, demands, max_cost, min_cap):
 
     # Attempt to remove each edge and check if the graph remains connected
     for edge in edges_to_consider:
+        # Store edge attributes before removing
+        edge_data = G.get_edge_data(*edge)
         G.remove_edge(*edge)
         if helpers.check_requirements(G, demands, max_cost, min_cap):
             killable_edges.append(edge)  # This edge can be killed
         else:
-            G.add_edge(*edge)  # Add it back if its removal disconnects the graph
-
+            # Add it back if its removal disconnects the graph, with original attributes
+            G.add_edge(*edge, **edge_data)
     return killable_edges
 
 
-def iterative_killer(G, demands, max_cost, min_cap):
+def working_killer(G, demands, max_cost, min_cap):
     """Iterative algorithm to kill as many edges as possible while maintaining connectivity.
     The original graph remains untouched throughout the process."""
     killed_links = []  # List to store all edges that were killed
@@ -46,33 +48,3 @@ def iterative_killer(G, demands, max_cost, min_cap):
     print(killed_links)
     return helpers.count_inner_lists(killed_links)
 
-# Example usage
-file = 'nobel-germany.xml'
-#G = parser.read_sndlib_topology(file)
-#print("test")
-#print(G.edges)
-# Add Edges
-
-G = nx.Graph()
-G.add_edge("1", "2", capacity=6.0, weight=1.0)
-G.add_edge("2", "3", capacity=6.0, weight=1.0)
-G.add_edge("2", "4", capacity=6.0, weight=1.0)
-G.add_edge("3", "5", capacity=6.0, weight=1.0)
-G.add_edge("4", "5", capacity=6.0, weight=1.0)
-G.add_edge("1", "3", capacity=6.0, weight=1.0)
-G.add_edge("2", "5", capacity=6.0, weight=1.0)
-# Initialize demands and other parameters
-demands = {
-    '1': 1,  # Supply node
-    '2': 1,  # Transit node
-    '3': 1,  # Transit node
-    '4': 1,  # Demand node
-    '5': 1,  # Transit node
-}
-
-min_cap = 0  # Minimum capacity for edges
-max_cost = 30  # Maximum cost constraint
-
-# Draw Graph
-link_failure_scenarios = iterative_killer(G, demands, max_cost, min_cap)
-print(link_failure_scenarios)

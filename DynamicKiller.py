@@ -35,42 +35,6 @@ def dynamic_killer(G, demands, max_cost, min_cap):
                     if edge_to_remove not in removable_edges[j - 1]:
                         removable_edges[j - 1].append(edge_to_remove)
                 temp_graph.add_edge(*edge_to_remove)  # Restore the edge
+    #print(removable_edges)
     return helpers.count_inner_lists(removable_edges)
 
-
-# Example usage
-file = 'nobel-germany.xml'
-#G = parser.read_sndlib_topology(file)
-#print("test")
-#print(G.edges)
-# Add Edges
-
-G = nx.Graph()
-G.add_edge("1", "2", capacity=6.0, weight=1.0)
-G.add_edge("2", "3", capacity=6.0, weight=1.0)
-G.add_edge("2", "4", capacity=6.0, weight=1.0)
-G.add_edge("3", "5", capacity=6.0, weight=1.0)
-G.add_edge("4", "5", capacity=6.0, weight=1.0)
-G.add_edge("1", "3", capacity=6.0, weight=1.0)
-G.add_edge("2", "5", capacity=6.0, weight=1.0)
-# Initialize demands and other parameters
-demands = {
-    '1': 1,  # Supply node
-    '2': 1,  # Transit node
-    '3': 1,  # Transit node
-    '4': 1,  # Demand node
-    '5': 1,  # Transit node
-}
-
-min_cap = 0  # Minimum capacity for edges
-max_cost = 30  # Maximum cost constraint
-
-# Draw Graph
-pos = nx.spring_layout(G)
-nx.draw(G, pos, with_labels=True)
-link_failure_scenarios = dynamic_killer(G, demands, max_cost, min_cap)
-print(link_failure_scenarios)
-edge_labels = nx.get_edge_attributes(G, 'capacity')
-nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
-plt.axis('off')
-plt.show()
