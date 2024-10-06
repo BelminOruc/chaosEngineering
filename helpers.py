@@ -16,17 +16,14 @@ def check_requirements(G, max_cost, min_flow):
     Returns:
     bool: True if requirements are met, False otherwise.
     """
-    # Ensure the graph is directed for flow calculations
+    # Ensure the graph is connected for flow calculations
     if not nx.is_connected(G):
-        #logging.info("Graph is not connected")
         return False
 
     tG = G.copy()
 
     try:
-        # Calculate maximum flow and its cost
-        flow_value = float('inf')
-        cost_value = 0
+        valid_costs = []
         for u, v, data in tG.edges(data=True):
             if 'cost' in data:
                 data['weight'] = data.pop('cost')
@@ -36,30 +33,21 @@ def check_requirements(G, max_cost, min_flow):
                 source = nodes[i]
                 sink = nodes[j]
                 temp_flow = nx.maximum_flow_value(tG, source, sink)
-                temp_dict = nx.max_flow_min_cost(tG, source, sink)
-                temp_cost = nx.cost_of_flow(tG, temp_dict) / 100000
-                if temp_flow < flow_value:
-                    flow_value = temp_flow
-                if temp_cost > cost_value:
-                    cost_value = temp_cost
+                if temp_flow >= min_flow:
+                    temp_dict = nx.max_flow_min_cost(tG, source, sink)
+                    temp_cost = nx.cost_of_flow(tG, temp_dict) / 100000
+                    valid_costs.append(temp_cost)
 
-        #print(flow_value)
-        #print(cost_value)
-        # Check if the total flow is less than the minimum required flow
-        if flow_value < min_flow:
-            print("Total flow is less than min flow" + str(flow_value))
+        if not valid_costs:
             return False
 
-            # Check if the total cost exceeds the maximum allowed cost
-        if cost_value > max_cost:
-            print("Cost is greater than max cost"+ str(cost_value))
+        min_valid_cost = min(valid_costs)
+
+        if min_valid_cost > max_cost:
             return False
 
-        # If both conditions are satisfied
-        #logging.info("Network found")
         return True
     except nx.NetworkXUnfeasible:
-        #logging.info("No feasible flow exists")
         return False
 
 

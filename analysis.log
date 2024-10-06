@@ -1,107 +1,151 @@
-2024-10-06 13:53:43,464 - Processing file: sndlibcontent/nobel-germany.xml
-2024-10-06 13:53:43,489 - Flowkiller: 
-2024-10-06 13:53:44,096 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Hamburg'), ('Hannover', 'Leipzig'), ('Frankfurt', 'Mannheim'), ('Frankfurt', 'Nuernberg'), ('Norden', 'Bremen'), ('Muenchen', 'Nuernberg'), ('Muenchen', 'Ulm'), ('Ulm', 'Stuttgart'), ('Stuttgart', 'Karlsruhe')]
-2024-10-06 13:53:44,096 - Iterations needed to terminate: 7
-2024-10-06 13:53:44,096 - Number of Survivors: 11
-2024-10-06 13:53:44,096 - BacktrackKiller: 
-2024-10-06 13:54:52,027 - Processing file: sndlibcontent/nobel-germany.xml
-2024-10-06 13:54:52,054 - Flowkiller: 
-2024-10-06 13:54:52,655 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Hamburg'), ('Hannover', 'Leipzig'), ('Frankfurt', 'Mannheim'), ('Frankfurt', 'Nuernberg'), ('Norden', 'Bremen'), ('Muenchen', 'Nuernberg'), ('Muenchen', 'Ulm'), ('Ulm', 'Stuttgart'), ('Stuttgart', 'Karlsruhe')]
-2024-10-06 13:54:52,656 - Iterations needed to terminate: 7
-2024-10-06 13:54:52,656 - Number of Survivors: 11
-2024-10-06 13:54:52,656 - BacktrackKiller: 
-2024-10-06 13:56:10,205 - Processing file: sndlibcontent/nobel-germany.xml
-2024-10-06 13:56:10,232 - Flowkiller: 
-2024-10-06 13:56:10,847 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Hamburg'), ('Hannover', 'Leipzig'), ('Frankfurt', 'Mannheim'), ('Frankfurt', 'Nuernberg'), ('Norden', 'Bremen'), ('Muenchen', 'Nuernberg'), ('Muenchen', 'Ulm'), ('Ulm', 'Stuttgart'), ('Stuttgart', 'Karlsruhe')]
-2024-10-06 13:56:10,847 - Iterations needed to terminate: 7
-2024-10-06 13:56:10,847 - Number of Survivors: 11
-2024-10-06 13:56:10,847 - BacktrackKiller: 
-2024-10-06 13:56:19,290 - Processing file: sndlibcontent/nobel-germany.xml
-2024-10-06 13:56:19,315 - Flowkiller: 
-2024-10-06 13:56:19,958 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Hamburg'), ('Hannover', 'Leipzig'), ('Frankfurt', 'Mannheim'), ('Frankfurt', 'Nuernberg'), ('Norden', 'Bremen'), ('Muenchen', 'Nuernberg'), ('Muenchen', 'Ulm'), ('Ulm', 'Stuttgart'), ('Stuttgart', 'Karlsruhe')]
-2024-10-06 13:56:19,958 - Iterations needed to terminate: 7
-2024-10-06 13:56:19,958 - Number of Survivors: 11
-2024-10-06 13:56:19,958 - BruteKiller: 
-2024-10-06 13:56:33,329 - Follorwing Edges could not be killed: []
-2024-10-06 13:56:33,330 - Iterations needed to terminate: 68
-2024-10-06 13:56:33,330 - Number of Survivors: 0
-2024-10-06 13:56:33,330 - DynamicKiller: 
-2024-10-06 13:56:54,449 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Leipzig'), ('Frankfurt', 'Leipzig'), ('Berlin', 'Leipzig'), ('Nuernberg', 'Stuttgart')]
-2024-10-06 13:56:54,449 - Iterations needed to terminate: 20
-2024-10-06 13:56:54,449 - Number of Survivors: 6
-2024-10-06 13:56:54,449 - Workingkiller: 
-2024-10-06 13:56:59,297 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Leipzig')]
-2024-10-06 13:56:59,297 - Iterations needed to terminate: 4
-2024-10-06 13:56:59,297 - Number of Survivors: 3
-2024-10-06 13:56:59,297 - --------------------------------------------------------------
-2024-10-06 13:58:06,244 - --------------------------------------------------------------------------------------
-2024-10-06 13:58:06,244 - Processing file: sndlibcontent/nobel-germany.xml
-2024-10-06 13:58:06,269 - Number of Edges
-2024-10-06 13:58:06,269 - 26
-2024-10-06 13:58:06,269 - Flowkiller: 
-2024-10-06 13:58:06,891 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Hamburg'), ('Hannover', 'Leipzig'), ('Frankfurt', 'Mannheim'), ('Frankfurt', 'Nuernberg'), ('Norden', 'Bremen'), ('Muenchen', 'Nuernberg'), ('Muenchen', 'Ulm'), ('Ulm', 'Stuttgart'), ('Stuttgart', 'Karlsruhe')]
-2024-10-06 13:58:06,891 - Iterations needed to terminate: 7
-2024-10-06 13:58:06,891 - Number of Survivors: 11
-2024-10-06 13:58:06,891 - BruteKiller: 
-2024-10-06 13:58:20,735 - Follorwing Edges could not be killed: []
-2024-10-06 13:58:20,735 - Iterations needed to terminate: 68
-2024-10-06 13:58:20,735 - Number of Survivors: 0
-2024-10-06 13:58:20,735 - DynamicKiller: 
-2024-10-06 13:58:41,919 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Leipzig'), ('Frankfurt', 'Leipzig'), ('Berlin', 'Leipzig'), ('Nuernberg', 'Stuttgart')]
-2024-10-06 13:58:41,919 - Iterations needed to terminate: 20
-2024-10-06 13:58:41,919 - Number of Survivors: 6
-2024-10-06 13:58:41,919 - Workingkiller: 
-2024-10-06 13:58:46,552 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Leipzig')]
-2024-10-06 13:58:46,552 - Iterations needed to terminate: 4
-2024-10-06 13:58:46,552 - Number of Survivors: 3
-2024-10-06 13:58:46,552 - --------------------------------------------------------------
-2024-10-06 14:02:55,797 - --------------------------------------------------------------------------------------
-2024-10-06 14:02:55,797 - Processing file: sndlibcontent/nobel-germany.xml
-2024-10-06 14:02:55,823 - Number of Edges
-2024-10-06 14:02:55,823 - 26
-2024-10-06 14:02:55,823 - BruteKiller: 
-2024-10-06 14:03:09,016 - Follorwing Edges could not be killed: []
-2024-10-06 14:03:09,016 - Iterations needed to terminate: 68
-2024-10-06 14:03:09,016 - Number of Survivors: 0
-2024-10-06 14:03:09,016 - --------------------------------------------------------------
-2024-10-06 14:04:08,997 - --------------------------------------------------------------------------------------
-2024-10-06 14:04:08,997 - Processing file: sndlibcontent/nobel-germany.xml
-2024-10-06 14:04:09,021 - Number of Edges
-2024-10-06 14:04:09,022 - 26
-2024-10-06 14:04:09,022 - BruteKiller: 
-2024-10-06 14:04:22,299 - Follorwing Edges could not be killed: []
-2024-10-06 14:04:22,299 - Iterations needed to terminate: 68
-2024-10-06 14:04:22,299 - Number of Survivors: 0
-2024-10-06 14:04:22,299 - --------------------------------------------------------------
-2024-10-06 14:04:34,084 - --------------------------------------------------------------------------------------
-2024-10-06 14:04:34,084 - Processing file: sndlibcontent/nobel-germany.xml
-2024-10-06 14:04:34,110 - Number of Edges
-2024-10-06 14:04:34,110 - 26
-2024-10-06 14:04:34,110 - BruteKiller: 
-2024-10-06 14:04:47,345 - Follorwing Edges could not be killed: []
-2024-10-06 14:04:47,345 - Iterations needed to terminate: 68
-2024-10-06 14:04:47,345 - Number of Survivors: 0
-2024-10-06 14:04:47,345 - --------------------------------------------------------------
-2024-10-06 14:05:26,059 - --------------------------------------------------------------------------------------
-2024-10-06 14:05:26,059 - Processing file: sndlibcontent/nobel-germany.xml
-2024-10-06 14:05:26,086 - Number of Edges
-2024-10-06 14:05:26,086 - 26
-2024-10-06 14:05:26,086 - Workingkiller: 
-2024-10-06 14:05:30,821 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Leipzig')]
-2024-10-06 14:05:30,821 - Iterations needed to terminate: 4
-2024-10-06 14:05:30,821 - Number of Survivors: 3
-2024-10-06 14:05:30,822 - --------------------------------------------------------------
-2024-10-06 14:07:43,141 - --------------------------------------------------------------------------------------
-2024-10-06 14:07:43,141 - Processing file: sndlibcontent/nobel-germany.xml
-2024-10-06 14:07:43,167 - Number of Edges
-2024-10-06 14:07:43,167 - 26
-2024-10-06 14:07:43,167 - Workingkiller: 
-2024-10-06 14:09:42,057 - --------------------------------------------------------------------------------------
-2024-10-06 14:09:42,057 - Processing file: sndlibcontent/nobel-germany.xml
-2024-10-06 14:09:42,082 - Number of Edges
-2024-10-06 14:09:42,082 - 26
-2024-10-06 14:09:42,082 - Workingkiller: 
-2024-10-06 14:09:46,702 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Leipzig')]
-2024-10-06 14:09:46,702 - Iterations needed to terminate: 4
-2024-10-06 14:09:46,702 - Number of Survivors: 3
-2024-10-06 14:09:46,702 - --------------------------------------------------------------
+2024-10-06 14:31:11,520 - --------------------------------------------------------------------------------------
+2024-10-06 14:31:11,520 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:31:11,546 - Number of Edges
+2024-10-06 14:31:11,546 - 26
+2024-10-06 14:31:11,546 - Flowkiller: 
+2024-10-06 14:31:12,235 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Hamburg'), ('Hannover', 'Leipzig'), ('Frankfurt', 'Mannheim'), ('Frankfurt', 'Nuernberg'), ('Norden', 'Bremen'), ('Muenchen', 'Nuernberg'), ('Muenchen', 'Ulm'), ('Ulm', 'Stuttgart'), ('Stuttgart', 'Karlsruhe')]
+2024-10-06 14:31:12,235 - Iterations needed to terminate: 7
+2024-10-06 14:31:12,235 - Number of Survivors: 11
+2024-10-06 14:31:12,235 - --------------------------------------------------------------
+2024-10-06 14:34:17,698 - --------------------------------------------------------------------------------------
+2024-10-06 14:34:17,698 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:34:17,724 - Number of Edges
+2024-10-06 14:34:17,724 - 26
+2024-10-06 14:34:17,725 - Flowkiller: 
+2024-10-06 14:34:18,368 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Hamburg'), ('Hannover', 'Leipzig'), ('Frankfurt', 'Mannheim'), ('Frankfurt', 'Nuernberg'), ('Norden', 'Bremen'), ('Muenchen', 'Nuernberg'), ('Muenchen', 'Ulm'), ('Ulm', 'Stuttgart'), ('Stuttgart', 'Karlsruhe')]
+2024-10-06 14:34:18,369 - Iterations needed to terminate: 7
+2024-10-06 14:34:18,369 - Number of Survivors: 11
+2024-10-06 14:34:18,369 - --------------------------------------------------------------
+2024-10-06 14:34:43,435 - --------------------------------------------------------------------------------------
+2024-10-06 14:34:43,435 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:34:43,542 - Number of Edges
+2024-10-06 14:34:43,543 - 26
+2024-10-06 14:34:43,544 - Flowkiller: 
+2024-10-06 14:35:35,256 - --------------------------------------------------------------------------------------
+2024-10-06 14:35:35,256 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:35:35,283 - Number of Edges
+2024-10-06 14:35:35,284 - 26
+2024-10-06 14:35:35,284 - Flowkiller: 
+2024-10-06 14:35:41,825 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Hamburg'), ('Hannover', 'Leipzig'), ('Frankfurt', 'Mannheim'), ('Frankfurt', 'Nuernberg'), ('Norden', 'Bremen'), ('Muenchen', 'Nuernberg'), ('Muenchen', 'Ulm'), ('Ulm', 'Stuttgart'), ('Stuttgart', 'Karlsruhe')]
+2024-10-06 14:35:41,826 - Iterations needed to terminate: 7
+2024-10-06 14:35:41,826 - Number of Survivors: 11
+2024-10-06 14:35:41,826 - --------------------------------------------------------------
+2024-10-06 14:35:44,646 - --------------------------------------------------------------------------------------
+2024-10-06 14:35:44,646 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:35:44,755 - Number of Edges
+2024-10-06 14:35:44,755 - 26
+2024-10-06 14:35:44,755 - Flowkiller: 
+2024-10-06 14:36:18,213 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Hamburg'), ('Hannover', 'Leipzig'), ('Frankfurt', 'Mannheim'), ('Frankfurt', 'Nuernberg'), ('Norden', 'Bremen'), ('Muenchen', 'Nuernberg'), ('Muenchen', 'Ulm'), ('Ulm', 'Stuttgart'), ('Stuttgart', 'Karlsruhe')]
+2024-10-06 14:36:18,213 - Iterations needed to terminate: 7
+2024-10-06 14:36:18,213 - Number of Survivors: 11
+2024-10-06 14:36:18,213 - --------------------------------------------------------------
+2024-10-06 14:37:00,874 - --------------------------------------------------------------------------------------
+2024-10-06 14:37:00,874 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:37:00,903 - Number of Edges
+2024-10-06 14:37:00,903 - 26
+2024-10-06 14:37:00,903 - Flowkiller: 
+2024-10-06 14:37:01,600 - Follorwing Edges could not be killed: [('Hannover', 'Bremen'), ('Hannover', 'Frankfurt'), ('Hannover', 'Hamburg'), ('Hannover', 'Leipzig'), ('Frankfurt', 'Mannheim'), ('Frankfurt', 'Nuernberg'), ('Norden', 'Bremen'), ('Muenchen', 'Nuernberg'), ('Muenchen', 'Ulm'), ('Ulm', 'Stuttgart'), ('Stuttgart', 'Karlsruhe')]
+2024-10-06 14:37:01,600 - Iterations needed to terminate: 7
+2024-10-06 14:37:01,600 - Number of Survivors: 11
+2024-10-06 14:37:01,601 - --------------------------------------------------------------
+2024-10-06 14:37:08,099 - --------------------------------------------------------------------------------------
+2024-10-06 14:37:08,100 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:37:08,218 - Number of Edges
+2024-10-06 14:37:08,218 - 26
+2024-10-06 14:37:08,219 - Flowkiller: 
+2024-10-06 14:37:48,190 - --------------------------------------------------------------------------------------
+2024-10-06 14:37:48,190 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:37:48,301 - Number of Edges
+2024-10-06 14:37:48,301 - 26
+2024-10-06 14:37:48,301 - Flowkiller: 
+2024-10-06 14:42:48,370 - --------------------------------------------------------------------------------------
+2024-10-06 14:42:48,370 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:42:48,396 - Number of Edges
+2024-10-06 14:42:48,396 - 26
+2024-10-06 14:42:48,396 - Flowkiller: 
+2024-10-06 14:42:56,951 - --------------------------------------------------------------------------------------
+2024-10-06 14:42:56,952 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:42:57,063 - Number of Edges
+2024-10-06 14:42:57,063 - 26
+2024-10-06 14:42:57,063 - Flowkiller: 
+2024-10-06 14:43:45,945 - --------------------------------------------------------------------------------------
+2024-10-06 14:43:45,945 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:43:46,051 - Number of Edges
+2024-10-06 14:43:46,051 - 26
+2024-10-06 14:43:46,052 - Flowkiller: 
+2024-10-06 14:44:13,736 - --------------------------------------------------------------------------------------
+2024-10-06 14:44:13,736 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:44:13,763 - Number of Edges
+2024-10-06 14:44:13,763 - 26
+2024-10-06 14:44:13,763 - Flowkiller: 
+2024-10-06 14:44:33,654 - --------------------------------------------------------------------------------------
+2024-10-06 14:44:33,654 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:44:33,767 - Number of Edges
+2024-10-06 14:44:33,767 - 26
+2024-10-06 14:44:33,767 - Flowkiller: 
+2024-10-06 14:45:02,526 - --------------------------------------------------------------------------------------
+2024-10-06 14:45:02,526 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:45:02,636 - Number of Edges
+2024-10-06 14:45:02,636 - 26
+2024-10-06 14:45:02,636 - Flowkiller: 
+2024-10-06 14:46:02,539 - --------------------------------------------------------------------------------------
+2024-10-06 14:46:02,540 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:46:02,653 - Number of Edges
+2024-10-06 14:46:02,653 - 26
+2024-10-06 14:46:02,654 - Flowkiller: 
+2024-10-06 14:46:05,861 - --------------------------------------------------------------------------------------
+2024-10-06 14:46:05,861 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:46:05,972 - Number of Edges
+2024-10-06 14:46:05,972 - 26
+2024-10-06 14:46:05,972 - Flowkiller: 
+2024-10-06 14:46:29,634 - --------------------------------------------------------------------------------------
+2024-10-06 14:46:29,635 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:46:29,739 - Number of Edges
+2024-10-06 14:46:29,739 - 26
+2024-10-06 14:46:29,739 - Flowkiller: 
+2024-10-06 14:47:14,025 - --------------------------------------------------------------------------------------
+2024-10-06 14:47:14,025 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:47:14,051 - Number of Edges
+2024-10-06 14:47:14,051 - 26
+2024-10-06 14:47:14,051 - Flowkiller: 
+2024-10-06 14:47:17,946 - --------------------------------------------------------------------------------------
+2024-10-06 14:47:17,946 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:47:18,055 - Number of Edges
+2024-10-06 14:47:18,055 - 26
+2024-10-06 14:47:18,055 - Flowkiller: 
+2024-10-06 14:48:02,820 - --------------------------------------------------------------------------------------
+2024-10-06 14:48:02,820 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:48:02,848 - Number of Edges
+2024-10-06 14:48:02,848 - 26
+2024-10-06 14:48:02,848 - Flowkiller: 
+2024-10-06 14:48:14,262 - Follorwing Edges could not be killed: []
+2024-10-06 14:48:14,262 - Iterations needed to terminate: 26
+2024-10-06 14:48:14,262 - Number of Survivors: 0
+2024-10-06 14:48:14,262 - --------------------------------------------------------------
+2024-10-06 14:50:22,617 - --------------------------------------------------------------------------------------
+2024-10-06 14:50:22,617 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 14:50:22,645 - Number of Edges
+2024-10-06 14:50:22,645 - 26
+2024-10-06 14:50:22,645 - Flowkiller: 
+2024-10-06 14:50:35,153 - Follorwing Edges could not be killed: []
+2024-10-06 14:50:35,153 - Iterations needed to terminate: 26
+2024-10-06 14:50:35,153 - Number of Survivors: 0
+2024-10-06 14:50:35,153 - --------------------------------------------------------------
+2024-10-06 15:07:12,692 - --------------------------------------------------------------------------------------
+2024-10-06 15:07:12,692 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 15:07:12,719 - Number of Edges
+2024-10-06 15:07:12,719 - 26
+2024-10-06 15:07:12,719 - Flowkiller: 
+2024-10-06 15:07:25,253 - Follorwing Edges could not be killed: []
+2024-10-06 15:07:25,253 - Iterations needed to terminate: 26
+2024-10-06 15:07:25,253 - Number of Survivors: 0
+2024-10-06 15:07:25,253 - --------------------------------------------------------------
+2024-10-06 15:08:24,234 - --------------------------------------------------------------------------------------
+2024-10-06 15:08:24,234 - Processing file: sndlibcontent/nobel-germany.xml
+2024-10-06 15:08:24,261 - Number of Edges
+2024-10-06 15:08:24,261 - 26
+2024-10-06 15:08:24,261 - Flowkiller: 
+2024-10-06 15:08:36,374 - Follorwing Edges could not be killed: []
+2024-10-06 15:08:36,374 - Iterations needed to terminate: 33
+2024-10-06 15:08:36,374 - Number of Survivors: 0
+2024-10-06 15:08:36,374 - --------------------------------------------------------------

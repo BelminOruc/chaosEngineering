@@ -34,11 +34,11 @@ logging.info(G.number_of_edges())
 
 
 #print(G.edges.data())
-#FlowKiller.greedy_flow_killer(G, demands, 7000, 0)
+FlowKiller.greedy_flow_killer(G, demands, 7000, 0)
 #BacktrackTracker.backtrack_killer(G, demands, 6000, 0)
 #BruteKiller.brute_killer(G, demands, 7000, 0)
 #DynamicKiller.dynamic_killer(G, demands, 7000, 0)
-WorkingKiller.working_killer(G, demands, 7000, 0)
+#WorkingKiller.working_killer(G, demands, 7000, 0)
 #RandomKiller.random_killer(G, demands, 60000, 0)
 
     #print(G.edges)
