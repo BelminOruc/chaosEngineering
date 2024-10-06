@@ -10,6 +10,7 @@ import parser
 
 
 def greedy_flow_killer(G, demands, max_cost, min_cap):
+    logging.info("Flowkiller: ")
     # Step 1: Compute link failure scenarios
     link_failures = []
     all_links = list(G.edges)
@@ -22,9 +23,9 @@ def greedy_flow_killer(G, demands, max_cost, min_cap):
     while not test:
         try:
             tree1 = next(iterator)
-            if helpers.check_requirements(tree1, demands, max_cost, min_cap):
+            if helpers.check_requirements(tree1, max_cost, min_cap):
                 for tree2_candidate in iterator:
-                    if helpers.check_requirements(tree2_candidate, demands, max_cost, min_cap):
+                    if helpers.check_requirements(tree2_candidate, max_cost, min_cap):
                         if tree1.edges.isdisjoint(tree2.edges):
                             tree2 = tree2_candidate
                             test = True
@@ -57,7 +58,7 @@ def greedy_flow_killer(G, demands, max_cost, min_cap):
 
             # Step 9: Calculate sum of new edge failures
             lambda_sum = sum(edge_weights[e] for e in failed_links)
-            test = helpers.check_requirements(tree, demands, max_cost, min_cap)
+            test = helpers.check_requirements(tree, max_cost, min_cap)
             if test:
                 # Step 10: Set weights of failed links to 0
                 all_links = [e for e in all_links if e not in failed_links]
@@ -81,4 +82,6 @@ def greedy_flow_killer(G, demands, max_cost, min_cap):
                     except:
                         break
                 break
-    return helpers.count_inner_lists(link_failures)
+    print(link_failures)
+    survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
+    helpers.showLoggingInfo(link_failures, survivors)

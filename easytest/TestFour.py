@@ -1,6 +1,9 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 
+import helpers
+
+
 def is_edge_node(graph, node):
     # A node is considered an edge node if it has degree 1 (either in or out)
     neighbors = list(graph.neighbors(node)) + list(graph.predecessors(node))
@@ -146,11 +149,8 @@ G = nx.Graph()
 G.add_edge('A', 'B', capacity=55, weight=1)
 G.add_edge('B', 'C', capacity=5, weight=2)
 #G.add_edge('C', 'A', capacity=5, weight=2)
-G.add_edge('A', 'D', capacity=7, weight=2)
+G.add_edge('C', 'D', capacity=7, weight=2)
 
 demands = {'A': 15, 'B': 5, 'C': 5, 'D': 5}  # Example demands
 maxcost = 100
 minflow = 10
-
-result = check_flow_requirements(G, demands, maxcost, minflow)
-print(result)

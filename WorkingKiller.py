@@ -1,3 +1,5 @@
+import logging
+
 import networkx as nx
 from matplotlib import pyplot as plt
 
@@ -13,7 +15,7 @@ def find_killable_edges(G, edges_to_consider, demands, max_cost, min_cap):
         # Store edge attributes before removing
         edge_data = G.get_edge_data(*edge)
         G.remove_edge(*edge)
-        if helpers.check_requirements(G, demands, max_cost, min_cap):
+        if helpers.check_requirements(G, max_cost, min_cap):
             killable_edges.append(edge)  # This edge can be killed
         else:
             # Add it back if its removal disconnects the graph, with original attributes
@@ -22,13 +24,16 @@ def find_killable_edges(G, edges_to_consider, demands, max_cost, min_cap):
 
 
 def working_killer(G, demands, max_cost, min_cap):
+    logging.info("Workingkiller: ")
+
     """Iterative algorithm to kill as many edges as possible while maintaining connectivity.
     The original graph remains untouched throughout the process."""
-    killed_links = []  # List to store all edges that were killed
+    link_failures = []  # List to store all edges that were killed
     remaining_edges = list(G.edges())  # List of edges to consider in the current iteration
+    original_edges = list(G.edges())
 
     while remaining_edges:
-        iteration_links=[]
+        iteration_links = []
         # Work with a fresh copy of the original graph in each round
         graph_copy = G.copy()
 
@@ -36,15 +41,15 @@ def working_killer(G, demands, max_cost, min_cap):
         killable_edges = find_killable_edges(graph_copy, remaining_edges, demands, max_cost, min_cap)
 
         if not killable_edges:
-            # If no more edges can be killed in this round, stop the process
+            #If no more edges can be killed in this round, stop the process
             break
         # Mark the killable edges as killed (but don't change the original graph)
 
         for edge in killable_edges:
             iteration_links.append(edge)  # Track the edges that are killed
             remaining_edges.remove(edge)  # Remove them from the list of remaining edges
-
-        killed_links.append(iteration_links)
-    print(killed_links)
-    return helpers.count_inner_lists(killed_links)
-
+        print(remaining_edges)
+        link_failures.append(iteration_links)
+    print(link_failures)
+    survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
+    helpers.showLoggingInfo(link_failures, survivors)
