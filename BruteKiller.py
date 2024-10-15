@@ -30,6 +30,6 @@ def brute_killer(G, demands, max_cost, min_cap):
     print(link_failures)
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
     helpers.showLoggingInfo(link_failures, survivors)
-
+    return len(link_failures)
 
 

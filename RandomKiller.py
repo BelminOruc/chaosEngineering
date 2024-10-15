@@ -34,25 +34,4 @@ def random_killer(G, demands, max_cost, min_cap):
 
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
     helpers.showLoggingInfo(link_failures, survivors)
-
-
-G = nx.Graph()
-G.add_edge("a", "b", capacity=6.0, weight=1.0)
-G.add_edge("a", "c", capacity=6.0, weight=1.0)
-G.add_edge("b", "c", capacity=6.0, weight=1.0)
-G.add_edge("b", "c", capacity=6.0, weight=1.0)
-G.add_edge("b", "e", capacity=6.0, weight=1.0)
-G.add_edge("b", "d", capacity=6.0, weight=1.0)
-G.add_edge("c", "d", capacity=6.0, weight=1.0)
-G.add_edge("c", "e", capacity=6.0, weight=1.0)
-G.add_edge("d", "e", capacity=6.0, weight=1.0)
-# Initialize demands and other parameters
-demands = {
-    'a': 1,  # Supply node
-    'b': 1,  # Transit node
-    'c': 1,  # Transit node
-    'd': 1,  # Demand node
-    'e': 1,  # Transit node
-    'x': 1,  # Transit node
-    'y': 1  # Demand node
-}
+    return len(link_failures)
