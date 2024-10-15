@@ -33,6 +33,7 @@ def working_killer(G, demands, max_cost, min_cap):
     original_edges = list(G.edges())
 
     while remaining_edges:
+        print("Try")
         iteration_links = []
         # Work with a fresh copy of the original graph in each round
         graph_copy = G.copy()
@@ -48,8 +49,7 @@ def working_killer(G, demands, max_cost, min_cap):
         for edge in killable_edges:
             iteration_links.append(edge)  # Track the edges that are killed
             remaining_edges.remove(edge)  # Remove them from the list of remaining edges
-        print(remaining_edges)
         link_failures.append(iteration_links)
-    print(link_failures)
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
     helpers.showLoggingInfo(link_failures, survivors)
+    return len(link_failures)

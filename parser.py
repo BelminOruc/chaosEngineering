@@ -39,7 +39,7 @@ def read_sndlib_topology(file):
             source = link.getElementsByTagName("source")[0].childNodes[0].data
             target = link.getElementsByTagName("target")[0].childNodes[0].data
 
-            graph.add_edge(source, target, id=link.getAttribute("id"), capacity=capacity, cost=cost, index=idx)
+            graph.add_edge(source, target, id=link.getAttribute("id") ,capacity=capacity, cost=cost, index=idx)
 
         demand_elements = document.getElementsByTagName("demand")
         for demand in demand_elements:
