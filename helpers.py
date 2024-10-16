@@ -22,21 +22,22 @@ def check_requirements(G, max_cost, min_flow):
 
     nodes = list(tG.nodes)
     valid_costs = []
-
+    for u, v, data in tG.edges(data=True):
+        if 'cost' in data:
+            data['weight'] = data.pop('cost')
     for i in range(len(nodes)):
         for j in range(i + 1, len(nodes)):
+            print("trying to find flow between " + str(i) + " and " + str(j))
             source = nodes[i]
             sink = nodes[j]
             temp_flow = nx.maximum_flow_value(tG, source, sink)
             if temp_flow >= min_flow:
                 try:
-                    print("trying")
                     temp_dict = nx.max_flow_min_cost(tG, source, sink)
-                    temp_cost = nx.cost_of_flow(tG, temp_dict) / 100000
+                    temp_cost = nx.cost_of_flow(tG, temp_dict)
                     valid_costs.append(temp_cost)
                 except nx.NetworkXUnfeasible:
                     continue
-
     if not valid_costs:
         return False
 
@@ -78,93 +79,131 @@ def showLoggingInfo(link_failures, survivors):
         logging.info("Follorwing Edges could not be killed: " + str(survivors))
 
 
-def generate_tikz_graph(x_values, y_values, filename='graphs.txt'):
+def generate_tikz_graph(name, y_values, x_values, failed_edges, filename='graphs.txt'):
     """
     Generates LaTeX TikZ code for a graph given two lists of integers.
 
     Parameters:
+    name (str): Label for the graph.
     x_values (list of int): List of x-axis values (iterations).
     y_values (list of int): List of y-axis values (edges).
+    failed_edges (list of int): List of y-axis values for failed edges.
+    filename (str): Name of the file to save the TikZ code.
 
     Returns:
     str: LaTeX TikZ code for the graph.
     """
-    if len(x_values) != len(y_values):
-        raise ValueError("The length of x_values and y_values must be the same.")
+    x_values, y_values, failed_edges = sort_by_values(x_values, y_values, failed_edges)
 
     tikz_code = "\\begin{tikzpicture}\n"
     tikz_code += "  \\begin{axis}[\n"
-    tikz_code += "    xlabel={iterations},\n"
-    tikz_code += "    ylabel={edges},\n"
+    tikz_code += "    title={" + name + "},\n"
+    tikz_code += "    xlabel={edges},\n"
+    tikz_code += "    ylabel={iterations},\n"
     tikz_code += "    grid=major,\n"
     tikz_code += "    width=10cm,\n"
     tikz_code += "    height=6cm\n"
     tikz_code += "  ]\n"
     tikz_code += "  \\addplot coordinates {\n"
 
-    for x, y in zip(x_values, y_values):
+    for x, y in zip(y_values, x_values):
+        tikz_code += f"    ({x}, {y})\n"
+
+    tikz_code += "  };\n"
+    tikz_code += "  \\addplot[color=red] coordinates {\n"
+
+    for x, y in zip(y_values, failed_edges):
         tikz_code += f"    ({x}, {y})\n"
 
     tikz_code += "  };\n"
     tikz_code += "  \\end{axis}\n"
     tikz_code += "\\end{tikzpicture}\n"
+
     with open(filename, 'a') as file:
         file.write(tikz_code)
 
 
-def plot_result_graph(x_values, y_values):
+def plot_result_graph(name, y_values, x_values, failed_edges):
+    x_values, y_values, failed_edges = sort_by_values(x_values, y_values, failed_edges)
     """
-    Plots a graph given two lists of integers using matplotlib.
+    Plots a graph given three lists of integers using matplotlib.
 
     Parameters:
+    name (str): Label for the graph.
     x_values (list of int): List of x-axis values (iterations).
     y_values (list of int): List of y-axis values (edges).
+    failed_edges (list of int): List of y-axis values for failed edges.
+    surviving_edges (list of int): List of y-axis values for surviving edges.
+
+    Returns:
+    None
     """
-    if len(x_values) != len(y_values):
-        raise ValueError("The length of x_values and y_values must be the same.")
+
 
     plt.figure(figsize=(10, 6))
-    plt.plot(x_values, y_values, marker='o')
-    plt.xlabel('Iterations')
-    plt.ylabel('Edges')
-    plt.title('Graph of Edges vs Iterations')
+    plt.plot(y_values, x_values, marker='o', label='Iterations')
+    plt.plot(y_values, failed_edges, marker='o', color='red', label='Failed Edges')
+    plt.xlabel('Edges')
+    plt.ylabel('Iterations/Not Failed Edges')
+    plt.title(name)
     plt.grid(True)
+    plt.legend()
     plt.show()
 
 def get_test_values(G):
-    if not nx.is_connected(G):
-        raise ValueError("Graph is not connected")
-
     tG = G.copy()
-    nodes = list(tG.nodes)
-    costs = []
     flows = []
+    costs = []
 
+    nodes = list(tG.nodes)
+    for u, v, data in tG.edges(data=True):
+        if 'cost' in data:
+            data['weight'] = data.pop('cost')
+    flow = nx.maximum_flow_value(tG, nodes[0], nodes[1])
     for i in range(len(nodes)):
         for j in range(i + 1, len(nodes)):
             source = nodes[i]
             sink = nodes[j]
             temp_flow = nx.maximum_flow_value(tG, source, sink)
-            if temp_flow > 0:
-                try:
-                    temp_dict = nx.max_flow_min_cost(tG, source, sink)
-                    temp_cost = nx.cost_of_flow(tG, temp_dict) / 100000
-                    costs.append(temp_cost)
-                    flows.append(temp_flow)
-                except nx.NetworkXUnfeasible:
-                    continue
-
+            try:
+                temp_dict = nx.max_flow_min_cost(tG, source, sink)
+                temp_cost = nx.cost_of_flow(tG, temp_dict)
+                costs.append(temp_cost)
+                flows.append(temp_flow)
+            except nx.NetworkXUnfeasible:
+                continue
     if not costs or not flows:
         raise ValueError("No valid flows or costs found")
-
     highest_cost = max(costs) + 1
-    highest_flow = max(flows) + 1
     mean_cost = sum(costs) / len(costs)
-    mean_flow = sum(flows) / len(flows)
     lowest_cost = min(costs) - 1
     lowest_flow = min(flows) - 1
 
-    return highest_cost, highest_flow, mean_cost, mean_flow, lowest_cost, lowest_flow
+    return highest_cost,  mean_cost, lowest_cost, lowest_flow
 
+def sort_by_values(x_values, y_values, failed_edges):
+    """
+    Sorts the x_values, y_values, and failed_edges lists based on ascending y_values.
 
+    Parameters:
+    x_values (list of int): List of x-axis values (iterations).
+    y_values (list of int): List of y-axis values (edges).
+    failed_edges (list of int): List of y-axis values for failed edges.
+
+    Returns:
+    tuple: Sorted x_values, y_values, and failed_edges lists.
+    """
+    if len(x_values) != len(y_values) or len(x_values) != len(failed_edges):
+        raise ValueError("The length of x_values, y_values, failed_edges.")
+    combined = list(zip(y_values, x_values, failed_edges))
+    combined.sort()  # Sort by the first element of the tuples, which is y_values
+
+    sorted_y_values, sorted_x_values, sorted_failed_edges = zip(*combined)
+    return list(sorted_x_values), list(sorted_y_values), list(sorted_failed_edges)
+
+def clear_files():
+    files_to_clear = ['graphs.txt', 'analysis.log']
+    for file in files_to_clear:
+        with open(file, 'w') as f:
+            f.truncate(0)
 

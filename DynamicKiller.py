@@ -6,7 +6,6 @@ import helpers
 
 # Fill the DP table
 def dynamic_killer(G, demands, max_cost, min_cap):
-    logging.info("DynamicKiller: ")
     
     """Dynamic Programming algorithm to find all edges that can be killed while maintaining connectivity."""
     original_edges = list(G.edges())
@@ -42,4 +41,5 @@ def dynamic_killer(G, demands, max_cost, min_cap):
     #print(link_failures)
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
     helpers.showLoggingInfo(link_failures, survivors)
+    return len(link_failures), len(survivors)
 

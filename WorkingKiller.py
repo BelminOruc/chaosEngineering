@@ -24,7 +24,6 @@ def find_killable_edges(G, edges_to_consider, demands, max_cost, min_cap):
 
 
 def working_killer(G, demands, max_cost, min_cap):
-    logging.info("Workingkiller: ")
 
     """Iterative algorithm to kill as many edges as possible while maintaining connectivity.
     The original graph remains untouched throughout the process."""
@@ -33,7 +32,6 @@ def working_killer(G, demands, max_cost, min_cap):
     original_edges = list(G.edges())
 
     while remaining_edges:
-        print("Try")
         iteration_links = []
         # Work with a fresh copy of the original graph in each round
         graph_copy = G.copy()
@@ -52,4 +50,4 @@ def working_killer(G, demands, max_cost, min_cap):
         link_failures.append(iteration_links)
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
     helpers.showLoggingInfo(link_failures, survivors)
-    return len(link_failures)
+    return len(link_failures), len(survivors)

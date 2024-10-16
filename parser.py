@@ -35,7 +35,9 @@ def read_sndlib_topology(file):
                 preInstalledModules = link.getElementsByTagName('preInstalledModule')
                 last_module = preInstalledModules[-1]
             capacity = float(last_module.getElementsByTagName('capacity')[0].firstChild.data)
+            capacity= int(capacity)
             cost = float(last_module.getElementsByTagName('cost')[0].firstChild.data)
+            cost= int(cost)
             source = link.getElementsByTagName("source")[0].childNodes[0].data
             target = link.getElementsByTagName("target")[0].childNodes[0].data
 

@@ -25,20 +25,22 @@ min_costs = []
 max_flows = []
 
 for i, file in enumerate(xml_files):
+    print("Processing file: " + file)
     G, demands = parser.read_sndlib_topology(file)
-    highest_cost, highest_flow, mean_cost, mean_flow, lowest_cost, lowest_flow = helpers.get_test_values(G)
-    max_costs[i] = highest_cost
-    min_flows[i] = lowest_flow
-    mean_flows[i] = mean_flow
-    mean_costs[i] = mean_cost
-    min_costs[i] = lowest_cost
-    max_flows[i] = highest_flow
-
+    highest_cost,  mean_cost,  lowest_cost, lowest_flow = helpers.get_test_values(G)
+    max_costs.append(highest_cost)
+    min_flows.append(lowest_flow)
+    mean_costs.append(mean_cost)
+    min_costs.append(lowest_cost)
 
 
 
 # Run the algorithms
 #Write here how to run the experiments using Analysis.py+
-Analysis.run_tests(max_costs, min_flows)
-Analysis.run_tests(mean_costs, mean_flows)
-Analysis.run_tests(min_costs, max_flows)
+helpers.clear_files()
+logging.info("#################################All edges can be killed################################################")
+Analysis.run_tests(min_flows, max_costs)
+#logging.info("##############################About half the edges can be killed########################################")
+#Analysis.run_tests(mean_flows, mean_costs)
+#logging.info("#####################################No Edges can be killed#############################################")
+#Analysis.run_tests(min_flows,max_costs)

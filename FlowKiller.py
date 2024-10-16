@@ -12,7 +12,6 @@ import parser
 # MSTs ensure that the graph will always be connected, but it does not guarantee that the graph will be able to handle the demands
 
 def greedy_flow_killer(G, demands, max_cost, min_cap):
-    logging.info("Flowkiller: ")
     # Step 1: Compute link failure scenarios
     link_failures = []
     remaining_edges = list(G.edges)
@@ -41,34 +40,34 @@ def greedy_flow_killer(G, demands, max_cost, min_cap):
         link_failures.append(list(set(G.edges) - set(tree2.edges)))
     else:
         # Step 4: No valid spanning trees
-        for u, v, data in G.edges(data=True):
-            data['weight'] = 1  # Step 5: Set link weights to 1
+        edge_weights = {e: 1 for e in G.edges}
 
         while remaining_edges:  # Step 6: Repeat
             tree = nx.minimum_spanning_tree(G, weight='weight')  # Step 7: Compute MST
-            failed_links = [e for e in G.edges if e not in tree.edges]  # Step 8: Fail links not in MST
+            print(tree.edges)
+            # Step 8: Fail all links not in the MST
+            failed_links = [e for e in G.edges if e not in tree.edges]
             if not failed_links:
                 break
             link_failures.append(failed_links)
 
             # Step 9: Calculate sum of new edge failures
-            lambda_sum = sum(G[u][v]['weight'] for u, v in failed_links)
+            lambda_sum = sum(edge_weights[e] for e in failed_links)
             test = helpers.check_requirements(tree, max_cost, min_cap)
             if test:
                 # Step 10: Set weights of failed links to 0
-                remaining_edges = [e for e in remaining_edges if e not in failed_links]
-                for u, v in failed_links:
-                    G[u][v]['weight'] = 0
+                all_links = [e for e in all_links if e not in failed_links]
+                for e in failed_links:
+                    edge_weights[e] = 0
             else:
-                #for u, v in tree.edges:
-                #    G[u][v]['weight'] = 2
                 link_failures.remove(failed_links)
-
+            print(test)
+            print(lambda_sum)
             # Step 11: Check termination condition
-            if lambda_sum == 0 or all(G[u][v]['weight'] == 0 for u, v in G.edges):
+            if lambda_sum == 0:
                 break
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
     helpers.showLoggingInfo(link_failures, survivors)
-    return link_failures
+    return len(link_failures), len(survivors)
 
 

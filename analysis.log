@@ -1,0 +1,40 @@
+2024-10-15 22:00:40,512 - #################################All edges can be killed################################################
+2024-10-15 22:00:40,513 - --------------------------------------------------------------
+2024-10-15 22:00:40,513 - --------------------------------------------------------------------------------------
+2024-10-15 22:00:40,513 - DynamicKiller: 
+2024-10-15 22:00:40,513 - Processing file: sndlibcontent\abilene.xml
+2024-10-15 22:00:40,518 - Number of Edges: 15
+2024-10-15 22:00:44,323 - Iterations needed to terminate: 14
+2024-10-15 22:00:44,323 - Number of Survivors: 1
+2024-10-15 22:00:44,323 - Follorwing Edges could not be killed: [('ATLAM5', 'ATLAng')]
+2024-10-15 22:00:44,323 - 
+2024-10-15 22:00:44,323 - Processing file: sndlibcontent\atlanta.xml
+2024-10-15 22:00:44,332 - Number of Edges: 22
+2024-10-15 22:01:04,938 - Iterations needed to terminate: 22
+2024-10-15 22:01:04,938 - 
+2024-10-15 22:01:04,938 - Processing file: sndlibcontent\cost266.xml
+2024-10-15 22:01:04,998 - Number of Edges: 57
+2024-10-15 22:36:00,860 - Iterations needed to terminate: 57
+2024-10-15 22:36:00,861 - 
+2024-10-15 22:36:00,861 - Processing file: sndlibcontent\dfn-bwin.xml
+2024-10-15 22:36:00,932 - Number of Edges: 45
+2024-10-15 22:36:39,962 - Iterations needed to terminate: 45
+2024-10-15 22:36:39,962 - 
+2024-10-15 22:36:39,962 - Processing file: sndlibcontent\dfn-gwin.xml
+2024-10-15 22:36:39,969 - Number of Edges: 47
+2024-10-15 22:37:54,408 - Iterations needed to terminate: 47
+2024-10-15 22:37:54,408 - 
+2024-10-15 22:37:54,408 - Processing file: sndlibcontent\di-yuan.xml
+2024-10-15 22:37:54,415 - Number of Edges: 42
+2024-10-15 22:38:43,312 - Iterations needed to terminate: 42
+2024-10-15 22:38:43,312 - 
+2024-10-15 22:38:43,313 - Processing file: sndlibcontent\france.xml
+2024-10-15 22:38:43,341 - Number of Edges: 45
+2024-10-15 22:45:19,501 - Iterations needed to terminate: 45
+2024-10-15 22:45:19,501 - 
+2024-10-15 22:45:19,501 - Processing file: sndlibcontent\geant.xml
+2024-10-15 22:45:19,534 - Number of Edges: 36
+2024-10-15 22:48:09,138 - Iterations needed to terminate: 36
+2024-10-15 22:48:09,138 - 
+2024-10-15 22:48:09,138 - Processing file: sndlibcontent\germany50.xml
+2024-10-15 22:48:09,162 - Number of Edges: 88
