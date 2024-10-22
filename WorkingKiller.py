@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 import helpers
 
 
-def find_killable_edges(G, edges_to_consider, demands, max_cost, min_cap):
+def find_killable_edges(G, edges_to_consider, max_cost, min_cap):
     """Find all edges from 'edges_to_consider' that can be killed while maintaining connectivity."""
     killable_edges = []
 
@@ -23,7 +23,7 @@ def find_killable_edges(G, edges_to_consider, demands, max_cost, min_cap):
     return killable_edges
 
 
-def working_killer(G, demands, max_cost, min_cap):
+def working_killer(G, max_cost, min_cap):
 
     """Iterative algorithm to kill as many edges as possible while maintaining connectivity.
     The original graph remains untouched throughout the process."""
@@ -37,7 +37,7 @@ def working_killer(G, demands, max_cost, min_cap):
         graph_copy = G.copy()
 
         # Try killing edges from the remaining set of edges
-        killable_edges = find_killable_edges(graph_copy, remaining_edges, demands, max_cost, min_cap)
+        killable_edges = find_killable_edges(graph_copy, remaining_edges, max_cost, min_cap)
 
         if not killable_edges:
             #If no more edges can be killed in this round, stop the process
@@ -49,5 +49,5 @@ def working_killer(G, demands, max_cost, min_cap):
             remaining_edges.remove(edge)  # Remove them from the list of remaining edges
         link_failures.append(iteration_links)
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
-    helpers.showLoggingInfo(link_failures, survivors)
-    return len(link_failures), len(survivors)
+    survivors = helpers.show_logging_info(G, link_failures, survivors)
+    return len(link_failures), survivors

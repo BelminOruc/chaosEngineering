@@ -54,7 +54,7 @@ def compute_link_failures(G):
             if lambda_sum == 0 or all(G[u][v]['weight'] == 0 for u, v in G.edges):
                 break
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
-    helpers.showLoggingInfo(link_failures, survivors)
-    return len(link_failures), len(survivors)
+    survivors=helpers.show_logging_info(G, link_failures, survivors)
+    return len(link_failures), survivors
 
 

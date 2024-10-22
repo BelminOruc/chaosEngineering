@@ -7,7 +7,7 @@ from matplotlib import pyplot as plt
 import helpers
 
 
-def random_killer(G, demands, max_cost, min_cap):
+def random_killer(G, max_cost, min_cap):
     """Random Algorithm to find all edges that can be killed while maintaining connectivity."""
     edges = list(G.edges())
     random.shuffle(edges)  # Shuffle the initial list of edges
@@ -32,5 +32,5 @@ def random_killer(G, demands, max_cost, min_cap):
             break
 
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
-    helpers.showLoggingInfo(link_failures, survivors)
+    helpers.show_logging_info(link_failures, survivors)
     return len(link_failures), len(survivors)

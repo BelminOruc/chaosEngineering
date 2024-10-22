@@ -11,7 +11,7 @@ import parser
 # I think its time to accept that the flowkiller is just really bad at looking at other requirements
 # MSTs ensure that the graph will always be connected, but it does not guarantee that the graph will be able to handle the demands
 
-def greedy_flow_killer(G, demands, max_cost, min_cap):
+def greedy_flow_killer(G, max_cost, min_cap):
     # Step 1: Compute link failure scenarios
     link_failures = []
     remaining_edges = list(G.edges)
@@ -67,7 +67,8 @@ def greedy_flow_killer(G, demands, max_cost, min_cap):
             if lambda_sum == 0:
                 break
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
-    helpers.showLoggingInfo(link_failures, survivors)
+    survivors = len(list(G.edges())) / len(survivors)
+    helpers.show_logging_info(link_failures, survivors)
     return len(link_failures), len(survivors)
 
 

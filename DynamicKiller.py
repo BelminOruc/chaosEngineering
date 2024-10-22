@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import helpers
 
 # Fill the DP table
-def dynamic_killer(G, demands, max_cost, min_cap):
+def dynamic_killer(G, max_cost, min_cap):
     
     """Dynamic Programming algorithm to find all edges that can be killed while maintaining connectivity."""
     original_edges = list(G.edges())
@@ -38,8 +38,9 @@ def dynamic_killer(G, demands, max_cost, min_cap):
                     if edge_to_remove not in link_failures[j - 1]:
                         link_failures[j - 1].append(edge_to_remove)
                 temp_graph.add_edge(*edge_to_remove)  # Restore the edge
-    #print(link_failures)
+
+    print(link_failures)
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
-    helpers.showLoggingInfo(link_failures, survivors)
-    return len(link_failures), len(survivors)
+    survivors = helpers.show_logging_info(G, link_failures, survivors)
+    return len(link_failures), survivors
 

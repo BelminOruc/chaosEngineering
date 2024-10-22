@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 import helpers
 
 
-def backtrack_killer(G, demands, max_cost, min_cap):
+def backtrack_killer(G, max_cost, min_cap):
     """Backtracking algorithm to find all edges that can be killed while maintaining connectivity."""
     original_edges = list(G.edges(data=True))
     remaining_edges = list(G.edges())
@@ -26,8 +26,9 @@ def backtrack_killer(G, demands, max_cost, min_cap):
                 if helpers.check_requirements(temp_graph, max_cost, min_cap):
                     link_failures.append(list(current_set))
                     all_edges_killed.update(current_set)
-                    remaining_edges.remove(edge[:2])
-                    if not remaining_edges:
+                    try:
+                        remaining_edges.remove(edge[:2])
+                    except:
                         return  # Stop recursion if no remaining edges
                     recursive_remove(temp_graph, current_set)
 
@@ -38,5 +39,5 @@ def backtrack_killer(G, demands, max_cost, min_cap):
     recursive_remove(G.copy(), set())
 
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
-    helpers.showLoggingInfo(link_failures, survivors)
-    return len(link_failures), len(survivors)
+    survivors = helpers.show_logging_info(G, link_failures, survivors)
+    return len(link_failures), survivors

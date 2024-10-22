@@ -1,61 +1,81 @@
 import networkx as nx
+from collections import deque
 from matplotlib import pyplot as plt
 import logging
 
 logging.basicConfig(filename='analysis.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
 
+def build_residual_network(G):
+    """Builds a residual network from the given graph."""
+    residual_graph = nx.DiGraph()
+    for u, v, data in G.edges(data=True):
+        capacity = data.get('capacity', 0)
+        residual_graph.add_edge(u, v, capacity=capacity)
+        residual_graph.add_edge(v, u, capacity=0)
+    return residual_graph
+
+
+def bfs_min_flow(residual_graph, source):
+    """Finds the minimum flow in the residual graph using BFS."""
+    visited = {node: False for node in residual_graph}
+    queue = deque([(source, float('Inf'))])
+    min_flow = float('Inf')
+
+    while queue:
+        current_node, flow = queue.popleft()
+        visited[current_node] = True
+
+        for neighbor in residual_graph[current_node]:
+            capacity = residual_graph[current_node][neighbor]['capacity']
+            if not visited[neighbor] and capacity > 0:
+                new_flow = min(flow, capacity)
+                min_flow = min(min_flow, new_flow)
+                queue.append((neighbor, new_flow))
+
+    return min_flow
+
+
+def find_lowest_weight(G, paths):
+    """Finds the lowest weight path in the graph."""
+    min_weight = float('Inf')
+    for source, target_paths in paths.items():
+        for target, path in target_paths.items():
+            weight = sum(
+                nx.get_edge_attributes(G, 'weight').get((path[i], path[i + 1]), 0) for i in range(len(path) - 1))
+            if weight < min_weight:
+                min_weight = weight
+    return min_weight
+
+
 def check_requirements(G, max_cost, min_flow):
-    """
-    Check if a flow exists that meets all the node demands with a maximum cost and a minimum flow.
-    Parameters:
-    G (nx.DiGraph): Directed graph with edge capacities and costs.
-    max_cost (int): Maximum allowable cost.
-    min_flow (int): Minimum required flow.
-    Returns:
-    bool: True if requirements are met, False otherwise.
-    """
+    """Checks if a flow exists that meets the requirements."""
     if not nx.is_connected(G):
         return False
 
-    tG = G.copy()
+    if(check_graph_data(G)):
+        tG = G.copy()
+        nodes = list(tG.nodes)
+        residual_graph = build_residual_network(tG)
+        flow = bfs_min_flow(residual_graph, nodes[0])
 
-    nodes = list(tG.nodes)
-    valid_costs = []
-    for u, v, data in tG.edges(data=True):
-        if 'cost' in data:
-            data['weight'] = data.pop('cost')
-    for i in range(len(nodes)):
-        for j in range(i + 1, len(nodes)):
-            print("trying to find flow between " + str(i) + " and " + str(j))
-            source = nodes[i]
-            sink = nodes[j]
-            temp_flow = nx.maximum_flow_value(tG, source, sink)
-            if temp_flow >= min_flow:
-                try:
-                    temp_dict = nx.max_flow_min_cost(tG, source, sink)
-                    temp_cost = nx.cost_of_flow(tG, temp_dict)
-                    valid_costs.append(temp_cost)
-                except nx.NetworkXUnfeasible:
-                    continue
-    if not valid_costs:
-        return False
+        for u, v, data in tG.edges(data=True):
+            if 'cost' in data:
+                data['weight'] = data.pop('cost')
+        weights = nx.get_edge_attributes(tG, 'weight')
 
-    min_valid_cost = min(valid_costs)
-    return min_valid_cost <= max_cost
+        cost = max(weights.values(), default=None)
 
-
-def is_connected(graph):
-    """Check if the graph is connected."""
-    return nx.is_connected(graph)
-
-
-def count_inner_lists(list_of_lists):
-    """Returns the number of lists in the given list of lists."""
-    return len(list_of_lists)
+        if flow < min_flow or cost > max_cost:
+            return False
+        else:
+            return True
+    else:
+        return True
 
 
 def show_plot(G):
+    """Displays a plot of the graph with edge labels."""
     pos = nx.spring_layout(G)
     nx.draw(G, pos, with_labels=True)
     edge_labels = nx.get_edge_attributes(G, 'cost')
@@ -65,41 +85,33 @@ def show_plot(G):
 
 
 def get_remaining_edges(original_edges, killed_edges):
+    """Returns the edges that are not in the killed edges list."""
     flattened_killed_edges = [edge for sublist in killed_edges for edge in sublist]
     remaining_edges = [edge for edge in original_edges if edge not in flattened_killed_edges]
     return remaining_edges
 
 
-def showLoggingInfo(link_failures, survivors):
+def show_logging_info(G, link_failures, survivors):
+    """Logs the number of iterations and survivors."""
     iterations = len(link_failures)
-    survive_number = len(survivors)
+    survive_number = survivors
+    survive_percentage = len(survivors)/len(list(G.edges()))*100
     logging.info("Iterations needed to terminate: " + str(iterations))
     if survive_number != 0:
-        logging.info("Number of Survivors: " + str(survive_number))
-        logging.info("Follorwing Edges could not be killed: " + str(survivors))
+        logging.info("Number of Survivors: " + str(len(survive_number)))
+        logging.info("Following Edges could not be killed: " + str(survivors))
+    return survive_percentage
 
 
 def generate_tikz_graph(name, y_values, x_values, failed_edges, filename='graphs.txt'):
-    """
-    Generates LaTeX TikZ code for a graph given two lists of integers.
-
-    Parameters:
-    name (str): Label for the graph.
-    x_values (list of int): List of x-axis values (iterations).
-    y_values (list of int): List of y-axis values (edges).
-    failed_edges (list of int): List of y-axis values for failed edges.
-    filename (str): Name of the file to save the TikZ code.
-
-    Returns:
-    str: LaTeX TikZ code for the graph.
-    """
+    """Generates LaTeX TikZ code for a graph."""
     x_values, y_values, failed_edges = sort_by_values(x_values, y_values, failed_edges)
-
-    tikz_code = "\\begin{tikzpicture}\n"
+    tikz_code = "\\\ \n"
+    tikz_code += "\\begin{tikzpicture}\n"
     tikz_code += "  \\begin{axis}[\n"
-    tikz_code += "    title={" + name + "},\n"
-    tikz_code += "    xlabel={edges},\n"
-    tikz_code += "    ylabel={iterations},\n"
+    tikz_code += "    title={" + name + " iterations},\n"
+    tikz_code += "    xlabel={Edges},\n"
+    tikz_code += "    ylabel={Iterations},\n"
     tikz_code += "    grid=major,\n"
     tikz_code += "    width=10cm,\n"
     tikz_code += "    height=6cm\n"
@@ -107,92 +119,90 @@ def generate_tikz_graph(name, y_values, x_values, failed_edges, filename='graphs
     tikz_code += "  \\addplot coordinates {\n"
 
     for x, y in zip(y_values, x_values):
-        tikz_code += f"    ({x}, {y})\n"
-
-    tikz_code += "  };\n"
-    tikz_code += "  \\addplot[color=red] coordinates {\n"
-
-    for x, y in zip(y_values, failed_edges):
-        tikz_code += f"    ({x}, {y})\n"
+        tikz_code += f"    ({x}, {y})"
 
     tikz_code += "  };\n"
     tikz_code += "  \\end{axis}\n"
     tikz_code += "\\end{tikzpicture}\n"
+    tikz_code += "\\\ \n"
+    tikz_code += "\\begin{tikzpicture}\n"
+    tikz_code += "  \\begin{axis}[\n"
+    tikz_code += "    title={" + name + " not killed},\n"
+    tikz_code += "    xlabel={Edges},\n"
+    tikz_code += "    ylabel={Failed Edges in Percent},\n"
+    tikz_code += "    grid=major,\n"
+    tikz_code += "    width=10cm,\n"
+    tikz_code += "    height=6cm\n"
+    tikz_code += "  ]\n"
 
+    tikz_code += "  \\addplot[color=red, mark=*] coordinates {\n"
+
+    for x, y in zip(y_values, failed_edges):
+        tikz_code += f"    ({x}, {y})"
+
+    tikz_code += "  };\n"
+    tikz_code += "  \\end{axis}\n"
+    tikz_code += "\\end{tikzpicture}\n"
+    tikz_code += "\\\ \n"
     with open(filename, 'a') as file:
         file.write(tikz_code)
 
 
 def plot_result_graph(name, y_values, x_values, failed_edges):
+    """Plots a graph using matplotlib."""
     x_values, y_values, failed_edges = sort_by_values(x_values, y_values, failed_edges)
-    """
-    Plots a graph given three lists of integers using matplotlib.
 
-    Parameters:
-    name (str): Label for the graph.
-    x_values (list of int): List of x-axis values (iterations).
-    y_values (list of int): List of y-axis values (edges).
-    failed_edges (list of int): List of y-axis values for failed edges.
-    surviving_edges (list of int): List of y-axis values for surviving edges.
-
-    Returns:
-    None
-    """
-
-
+    # Plot for iterations
     plt.figure(figsize=(10, 6))
     plt.plot(y_values, x_values, marker='o', label='Iterations')
-    plt.plot(y_values, failed_edges, marker='o', color='red', label='Failed Edges')
     plt.xlabel('Edges')
-    plt.ylabel('Iterations/Not Failed Edges')
-    plt.title(name)
+    plt.ylabel('Iterations')
+    plt.title(name + ' Iterations')
     plt.grid(True)
     plt.legend()
     plt.show()
 
+    # Plot for failed edges
+    plt.figure(figsize=(10, 6))
+    plt.plot(y_values, failed_edges, marker='o', color='red', label='Failed Edges in Percent')
+    plt.xlabel('Edges')
+    plt.ylabel('Failed Edges')
+    plt.title(name + ' Failed Edges')
+    plt.grid(True)
+    plt.legend()
+    plt.show()
+
+
 def get_test_values(G):
-    tG = G.copy()
+    """Returns test values for the graph."""
     flows = []
     costs = []
-
+    tG = G.copy()
     nodes = list(tG.nodes)
+
+    residual_graph = build_residual_network(tG)
+    flow = bfs_min_flow(residual_graph, nodes[0])
+
     for u, v, data in tG.edges(data=True):
         if 'cost' in data:
             data['weight'] = data.pop('cost')
-    flow = nx.maximum_flow_value(tG, nodes[0], nodes[1])
-    for i in range(len(nodes)):
-        for j in range(i + 1, len(nodes)):
-            source = nodes[i]
-            sink = nodes[j]
-            temp_flow = nx.maximum_flow_value(tG, source, sink)
-            try:
-                temp_dict = nx.max_flow_min_cost(tG, source, sink)
-                temp_cost = nx.cost_of_flow(tG, temp_dict)
-                costs.append(temp_cost)
-                flows.append(temp_flow)
-            except nx.NetworkXUnfeasible:
-                continue
-    if not costs or not flows:
-        raise ValueError("No valid flows or costs found")
-    highest_cost = max(costs) + 1
-    mean_cost = sum(costs) / len(costs)
-    lowest_cost = min(costs) - 1
-    lowest_flow = min(flows) - 1
+    weights = list(nx.get_edge_attributes(tG, 'weight').values())
+    highest_cost = max(weights) + 1
+    weights.sort()
+    index_95th_percentile = int(len(weights) * 0.99)
+    index_80th_percentile = int(len(weights) * 0.90)
+    index_50th_percentile = int(len(weights) * 0.50)
+    five_percent = weights[index_95th_percentile-1]
+    twenty_percent = weights[index_80th_percentile-1]
+    half = weights[index_50th_percentile-1]
 
-    return highest_cost,  mean_cost, lowest_cost, lowest_flow
+    lowest_flow = flow - 1
+
+    return highest_cost, five_percent, twenty_percent,  half,  lowest_flow
+
 
 def sort_by_values(x_values, y_values, failed_edges):
-    """
-    Sorts the x_values, y_values, and failed_edges lists based on ascending y_values.
-
-    Parameters:
-    x_values (list of int): List of x-axis values (iterations).
-    y_values (list of int): List of y-axis values (edges).
-    failed_edges (list of int): List of y-axis values for failed edges.
-
-    Returns:
-    tuple: Sorted x_values, y_values, and failed_edges lists.
-    """
+    """Sorts the x_values, y_values, and failed_edges lists."""
     if len(x_values) != len(y_values) or len(x_values) != len(failed_edges):
         raise ValueError("The length of x_values, y_values, failed_edges.")
     combined = list(zip(y_values, x_values, failed_edges))
@@ -201,9 +211,18 @@ def sort_by_values(x_values, y_values, failed_edges):
     sorted_y_values, sorted_x_values, sorted_failed_edges = zip(*combined)
     return list(sorted_x_values), list(sorted_y_values), list(sorted_failed_edges)
 
+
 def clear_files():
+    """Clears the contents of specified files."""
     files_to_clear = ['graphs.txt', 'analysis.log']
     for file in files_to_clear:
         with open(file, 'w') as f:
             f.truncate(0)
 
+
+def check_graph_data(G):
+    """Checks if all edges in the graph have 'capacity' and 'cost' as edge data."""
+    for u, v, data in G.edges(data=True):
+        if 'capacity' not in data or 'cost' not in data:
+            return False
+    return True
