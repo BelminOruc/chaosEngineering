@@ -37,8 +37,7 @@ These include: Working Killer, Iterative killer and the Backtrack Killer.
 
 To change that go to analysis.py and uncomment the algorithms you want to run.
 
-The algorithms that are commented out are the ones that have problems with certain data sets and would not run smoothly.
-
+The commented-out algorithms are those that that encounter difficulties when processing specific data sets and therefore cannot be expected to function optimally. 
 ## Returns
 log file "analysis.log" with the results of the experiments
 
