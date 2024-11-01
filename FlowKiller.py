@@ -12,6 +12,7 @@ import parser
 # MSTs ensure that the graph will always be connected, but it does not guarantee that the graph will be able to handle the demands
 
 def greedy_flow_killer(G, max_cost, min_cap):
+    logging.info("Flowkiller: ")
     # Step 1: Compute link failure scenarios
     link_failures = []
     remaining_edges = list(G.edges)
@@ -39,14 +40,24 @@ def greedy_flow_killer(G, max_cost, min_cap):
         link_failures.append(list(set(G.edges) - set(tree1.edges)))
         link_failures.append(list(set(G.edges) - set(tree2.edges)))
     else:
-        # Step 4: No valid spanning trees
+        # Step 4: No valid spanning trees#
         edge_weights = {e: 1 for e in G.edges}
-
-        while remaining_edges:  # Step 6: Repeat
-            tree = nx.minimum_spanning_tree(G, weight='weight')  # Step 7: Compute MST
-            print(tree.edges)
+        it2 = nx.algorithms.tree.mst.SpanningTreeIterator(G, weight='weight', minimum=False)
+        iter(it2)
+        finished_once = False
+        tree = None
+        while remaining_edges:  # Continue as long as remaining_edges is not empty
+            # Step 7: Compute minimum weight spanning tree (MST)
+            if not finished_once:
+                try:
+                    tree = next(it2)
+                except:
+                    break
             # Step 8: Fail all links not in the MST
-            failed_links = [e for e in G.edges if e not in tree.edges]
+            try:
+                failed_links = [e for e in G.edges if e not in tree.edges]
+            except:
+                break
             if not failed_links:
                 break
             link_failures.append(failed_links)
@@ -56,19 +67,29 @@ def greedy_flow_killer(G, max_cost, min_cap):
             test = helpers.check_requirements(tree, max_cost, min_cap)
             if test:
                 # Step 10: Set weights of failed links to 0
-                all_links = [e for e in all_links if e not in failed_links]
+                remaining_edges = [e for e in remaining_edges if e not in failed_links]
                 for e in failed_links:
                     edge_weights[e] = 0
             else:
                 link_failures.remove(failed_links)
-            print(test)
-            print(lambda_sum)
+
             # Step 11: Check termination condition
             if lambda_sum == 0:
-                break
+                finished_once = True
+                tree=None
+                remaining_edges.reverse()
+                for link in remaining_edges:
+                    try:
+                        while not tree:
+                            current_tree = next(it2)
+                            if link not in current_tree.edges:
+                                tree = current_tree
+                                break  # Restart the main while loop with the newly found tree
+                    except:
+                        break
+                continue
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
-    survivors = len(list(G.edges())) / len(survivors)
-    helpers.show_logging_info(link_failures, survivors)
-    return len(link_failures), len(survivors)
+    survivors = helpers.show_logging_info(G, link_failures, survivors)
+    return len(link_failures), survivors
 
 

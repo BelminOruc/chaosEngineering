@@ -1,3 +1,4 @@
+import itertools
 import logging
 
 import networkx as nx
@@ -6,41 +7,41 @@ import helpers
 
 # Fill the DP table
 def dynamic_killer(G, max_cost, min_cap):
-    
     """Dynamic Programming algorithm to find all edges that can be killed while maintaining connectivity."""
     original_edges = list(G.edges())
-    n = len(original_edges)
-    dp = [[0] * (n + 1) for _ in range(n + 1)]
-    link_failures = []
+    memo = {}
 
-    # Fill the DP table
-    for i in range(1, n + 1):
-        edge_to_remove = original_edges[i - 1]
+    def dp(edges):
+        edges_tuple = tuple(sorted(edges))
+        if edges_tuple in memo:
+            return memo[edges_tuple]
+
         temp_graph = G.copy()
+        temp_graph.remove_edges_from(edges)
 
-        if temp_graph.has_edge(*edge_to_remove):
-            temp_graph.remove_edge(*edge_to_remove)
+        if not helpers.check_requirements(temp_graph, max_cost, min_cap):
+            memo[edges_tuple] = False
+            return False
 
-        if helpers.check_requirements(temp_graph, max_cost, min_cap):  # Check if the graph remains connected
-            dp[i][1] = 1  # We can remove this edge
-            link_failures.append([edge_to_remove])
+        for edge in edges:
+            remaining_edges = [e for e in edges if e != edge]
+            if dp(remaining_edges):
+                memo[edges_tuple] = True
+                return True
 
-        for j in range(2, n + 1):
-            dp[i][j] = dp[i - 1][j]  # Not removing this edge
-            if dp[i - 1][j - 1] > 0:  # Check if we can remove this edge
-                if temp_graph.has_edge(*edge_to_remove):
-                    temp_graph.remove_edge(*edge_to_remove)
+        memo[edges_tuple] = True
+        return True
 
-                if helpers.check_requirements(temp_graph, max_cost, min_cap):
-                    dp[i][j] = max(dp[i][j], dp[i - 1][j - 1] + 1)
-                    if len(link_failures) < j:
-                        link_failures.append([])
-                    if edge_to_remove not in link_failures[j - 1]:
-                        link_failures[j - 1].append(edge_to_remove)
-                temp_graph.add_edge(*edge_to_remove)  # Restore the edge
+    link_failures = []
+    for r in range(1, len(original_edges) + 1):
+        for edges_to_remove in itertools.combinations(original_edges, r):
+            if dp(edges_to_remove):
+                link_failures.append(list(edges_to_remove))
+            if len(link_failures) == len(original_edges):
+                break
+        if len(link_failures) == len(original_edges):
+            break
 
-    print(link_failures)
     survivors = helpers.get_remaining_edges(list(G.edges()), link_failures)
     survivors = helpers.show_logging_info(G, link_failures, survivors)
     return len(link_failures), survivors
-

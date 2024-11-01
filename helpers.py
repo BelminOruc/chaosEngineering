@@ -6,19 +6,11 @@ import logging
 logging.basicConfig(filename='analysis.log', level=logging.INFO, format='%(asctime)s - %(message)s')
 
 
-def build_residual_network(G):
-    """Builds a residual network from the given graph."""
-    residual_graph = nx.DiGraph()
-    for u, v, data in G.edges(data=True):
-        capacity = data.get('capacity', 0)
-        residual_graph.add_edge(u, v, capacity=capacity)
-        residual_graph.add_edge(v, u, capacity=0)
-    return residual_graph
 
 
-def bfs_min_flow(residual_graph, source):
+def bfs_min_flow(graph, source):
     """Finds the minimum flow in the residual graph using BFS."""
-    visited = {node: False for node in residual_graph}
+    visited = {node: False for node in graph}
     queue = deque([(source, float('Inf'))])
     min_flow = float('Inf')
 
@@ -26,9 +18,9 @@ def bfs_min_flow(residual_graph, source):
         current_node, flow = queue.popleft()
         visited[current_node] = True
 
-        for neighbor in residual_graph[current_node]:
-            capacity = residual_graph[current_node][neighbor]['capacity']
-            if not visited[neighbor] and capacity > 0:
+        for neighbor in graph[current_node]:
+            capacity = graph[current_node][neighbor]['capacity']
+            if not visited[neighbor]:
                 new_flow = min(flow, capacity)
                 min_flow = min(min_flow, new_flow)
                 queue.append((neighbor, new_flow))
@@ -50,14 +42,21 @@ def find_lowest_weight(G, paths):
 
 def check_requirements(G, max_cost, min_flow):
     """Checks if a flow exists that meets the requirements."""
+    #if not nx.is_biconnected(G):
+    #    return False
+
     if not nx.is_connected(G):
         return False
 
     if(check_graph_data(G)):
         tG = G.copy()
         nodes = list(tG.nodes)
-        residual_graph = build_residual_network(tG)
-        flow = bfs_min_flow(residual_graph, nodes[0])
+        lowest_flow = float('Inf')
+        for node in nodes:
+
+            flow = bfs_min_flow(tG, node)
+            if flow < lowest_flow:
+                lowest_flow = flow
 
         for u, v, data in tG.edges(data=True):
             if 'cost' in data:
@@ -66,7 +65,7 @@ def check_requirements(G, max_cost, min_flow):
 
         cost = max(weights.values(), default=None)
 
-        if flow < min_flow or cost > max_cost:
+        if lowest_flow < min_flow or cost > max_cost:
             return False
         else:
             return True
@@ -86,7 +85,11 @@ def show_plot(G):
 
 def get_remaining_edges(original_edges, killed_edges):
     """Returns the edges that are not in the killed edges list."""
-    flattened_killed_edges = [edge for sublist in killed_edges for edge in sublist]
+    if all(isinstance(edge, tuple) and len(edge) == 2 for edge in killed_edges):
+        flattened_killed_edges = killed_edges
+    else:
+        flattened_killed_edges = [edge for sublist in killed_edges for edge in sublist]
+
     remaining_edges = [edge for edge in original_edges if edge not in flattened_killed_edges]
     return remaining_edges
 
@@ -180,8 +183,7 @@ def get_test_values(G):
     tG = G.copy()
     nodes = list(tG.nodes)
 
-    residual_graph = build_residual_network(tG)
-    flow = bfs_min_flow(residual_graph, nodes[0])
+    flow = bfs_min_flow(tG, nodes[0])
 
     for u, v, data in tG.edges(data=True):
         if 'cost' in data:
@@ -190,7 +192,7 @@ def get_test_values(G):
     highest_cost = max(weights) + 1
     weights.sort()
     index_95th_percentile = int(len(weights) * 0.99)
-    index_80th_percentile = int(len(weights) * 0.90)
+    index_80th_percentile = int(len(weights) * 0.95)
     index_50th_percentile = int(len(weights) * 0.50)
     five_percent = weights[index_95th_percentile-1]
     twenty_percent = weights[index_80th_percentile-1]

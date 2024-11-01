@@ -22,6 +22,8 @@ G_SND=[]
 G_TZOO=[]
 max_costs = []
 min_flows = []
+tmax_costs = []
+tmin_flows = []
 five = []
 twenty = []
 seventh = []
@@ -31,12 +33,13 @@ for file in gml_files:
     try:
         G= nx.read_gml(file)
         print("Processing file: " +str(counter)+":   " + str(file))
-        #min_flows.append(0)
-        #max_costs.append(0)
+        tmin_flows.append(0)
+        tmax_costs.append(0)
         G_TZOO.append(G)
         counter += 1
     except:
         continue
+
 counter = 0
 for file in xml_files:
     print("Processing file: " +str(counter) + str(file))
@@ -48,15 +51,18 @@ for file in xml_files:
     twenty.append(twenty_percent)
     halfed.append(half)
     min_flows.append(lowest_flow)
+    counter += 1
 
 # Run the algorithms
 #Write here how to run the experiments using Analysis.py+
 helpers.clear_files()
 logging.info("#################################All edges can be killed################################################")
-Analysis.run_tests(G_SND, min_flows, max_costs, " 100\%")
+Analysis.run_tests(G_TZOO, tmin_flows, tmax_costs, " 100\%")
+logging.info("#################################All edges can be killed################################################")
+Analysis.run_tests(G_TZOO, min_flows, max_costs, " 100\%")
 logging.info("#################################99% of edges can be killed################################################")
-#Analysis.run_tests(G_SND, min_flows, five, " 99\%")
+Analysis.run_tests(G_SND, min_flows, five, " 99\%")
 logging.info("#################################95% of edges can be killed################################################")
-#Analysis.run_tests(G_SND, min_flows, twenty , " 95\%")
+Analysis.run_tests(G_SND, min_flows, twenty , " 95\%")
 logging.info("#################################50% of edges can be killed################################################")
-#Analysis.run_tests(G_SND, min_flows, halfed, " 50\%")
+Analysis.run_tests(G_SND, min_flows, halfed, " 50\%")

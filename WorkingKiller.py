@@ -11,6 +11,7 @@ def find_killable_edges(G, edges_to_consider, max_cost, min_cap):
     killable_edges = []
 
     # Attempt to remove each edge and check if the graph remains connected
+    edges_to_consider.sort(key=lambda edge: G.get_edge_data(*edge).get('cost', 0), reverse=True)
     for edge in edges_to_consider:
         # Store edge attributes before removing
         edge_data = G.get_edge_data(*edge)
@@ -20,6 +21,7 @@ def find_killable_edges(G, edges_to_consider, max_cost, min_cap):
         else:
             # Add it back if its removal disconnects the graph, with original attributes
             G.add_edge(*edge, **edge_data)
+    print(G.edges)
     return killable_edges
 
 
@@ -35,7 +37,6 @@ def working_killer(G, max_cost, min_cap):
         iteration_links = []
         # Work with a fresh copy of the original graph in each round
         graph_copy = G.copy()
-
         # Try killing edges from the remaining set of edges
         killable_edges = find_killable_edges(graph_copy, remaining_edges, max_cost, min_cap)
 

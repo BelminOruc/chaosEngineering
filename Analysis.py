@@ -1,6 +1,8 @@
 import BacktrackKiller
 import BruteKiller
 import DynamicKiller
+import FlowKiller
+import IterativeKiller
 import RandomKiller
 import GreedyKiller
 import WorkingKiller
@@ -24,6 +26,32 @@ xml_files = glob.glob(os.path.join(directory, '*.xml'))
 
 def run_tests(G, min_flow, max_cost, run):
     '''
+    edge_numbers = []
+    for i, graph in enumerate(G):
+        edge_numbers.append(G[i].number_of_edges())
+    logging.info("Number of edges: "+ str(sum(edge_numbers)/len(edge_numbers)))
+    logging.info("--------------------------------------------------------------")
+    logging.info("Flowkiller: ")
+    edge_numbers = []
+    iterations = []
+    survivors = []
+    for i, graph in enumerate(G):
+        logging.info(f'File Nr.' + str(i))
+        # G, demands = parser.read_sndlib_topology(file)
+        logging.info("Number of Edges: " + str(G[i].number_of_edges()))
+        edge_numbers.append(G[i].number_of_edges())
+        iteration, survivor = FlowKiller.greedy_flow_killer(G[i], max_cost[i], min_flow[i])
+        iterations.append(iteration)
+        survivors.append(survivor)
+
+        logging.info("")
+        print("Finished")
+    logging.info("Iterations: " + str(sum(iterations) / len(iterations)))
+    logging.info("Survivers:  " + str(sum(survivors) / len(survivors)) + "%")
+    helpers.generate_tikz_graph("Flowkiller, " + run, edge_numbers, iterations, survivors)
+    helpers.plot_result_graph("Flowkiller, " + run, edge_numbers, iterations, survivors)
+    logging.info("--------------------------------------------------------------------------------------")
+    '''
     logging.info("--------------------------------------------------------------")
     logging.info("Workingkiller: ")
     edge_numbers = []
@@ -44,64 +72,10 @@ def run_tests(G, min_flow, max_cost, run):
     logging.info("Survivers:  " + str(sum(survivors) / len(survivors)) + "%")
     helpers.generate_tikz_graph("Workingkiller, " + run, edge_numbers, iterations, survivors)
     helpers.plot_result_graph("Workingkiller, " + run, edge_numbers, iterations, survivors)
-    '''
-    logging.info("--------------------------------------------------------------------------------------")
-    logging.info("DynamicKiller: ")
-    edge_numbers = []
-    iterations = []
-    survivors = []
-    for i, graph in enumerate(G):
-        logging.info(f'Processing file: {i}')
-        logging.info("Number of Edges: " + str(G[i].number_of_edges()))
-        edge_numbers.append(G[i].number_of_edges())
-        iteration, survivor = DynamicKiller.dynamic_killer(G[i], max_cost[i], min_flow[i])
-        iterations.append(iteration)
-        survivors.append(survivor)
-        logging.info("")
-        print("Finished")
-    logging.info("Iterations: "+ str(sum(iterations) / len(iterations)))
-    logging.info("Survivers:  "+str(sum(survivors) / len(survivors))+"%")
-    helpers.generate_tikz_graph("DynamicKiller, "+ run, edge_numbers, iterations, survivors)
-    helpers.plot_result_graph("DynamicKiller, "+ run, edge_numbers, iterations, survivors)
-    '''
-    logging.info("--------------------------------------------------------------------------------------")
-    logging.info("Greedykiller: ")
-    edge_numbers = []
-    iterations = []
-    survivors = []
-    for i, graph in enumerate(G):
-        logging.info(f'Processing file: '+ str(i))
-        logging.info("Number of Edges: " + str(G[i].number_of_edges()))
-        edge_numbers.append(G[i].number_of_edges())
-        iteration, survivor = GreedyKiller.compute_link_failures(G[i])
-        iterations.append(iteration)
-        survivors.append(survivor)
-        logging.info("")
-        print("Finished")
-    logging.info(sum(survivors)/len(survivors))
-    logging.info(sum(iterations) / len(iterations))
-    helpers.generate_tikz_graph("Greedykiller, "+ run, edge_numbers, iterations, survivors)
-    helpers.plot_result_graph("Greedykiller, "+ run, edge_numbers, iterations, survivors)
     logging.info("--------------------------------------------------------------------------------------")
 
-    logging.info("Random: ")
-    edge_numbers = []
-    iterations = []
-    survivors = []
-    for i, graph in enumerate(G):
-        logging.info(f'Processing file: {i}')
-        logging.info("Number of Edges: " + str(G[i].number_of_edges()))
-        edge_numbers.append(G[i].number_of_edges())
-        iteration, survivor = RandomKiller.random_killer(G[i], max_cost[i], min_flow[i])
-        iterations.append(iteration)
-        survivors.append(survivor)
-        logging.info("")
-        print("Finished")
-    helpers.generate_tikz_graph("Random, "+ run, edge_numbers, iterations, survivors)
-    helpers.plot_result_graph("Random, "+ run, edge_numbers, iterations, survivors)
     logging.info("--------------------------------------------------------------------------------------")
-
-    logging.info("BruteKiller: ")
+    logging.info("Iterative Killer: ")
     edge_numbers = []
     iterations = []
     survivors = []
@@ -109,13 +83,15 @@ def run_tests(G, min_flow, max_cost, run):
         logging.info(f'Processing file: {i}')
         logging.info("Number of Edges: " + str(G[i].number_of_edges()))
         edge_numbers.append(G[i].number_of_edges())
-        iteration, survivor = BruteKiller.brute_killer(G[i], max_cost[i], min_flow[i])
+        iteration, survivor = IterativeKiller.iterative_killer(G[i], max_cost[i], min_flow[i])
         iterations.append(iteration)
         survivors.append(survivor)
         logging.info("")
         print("Finished")
-    helpers.generate_tikz_graph("BruteKiller, "+ run, edge_numbers, iterations, survivors)
-    helpers.plot_result_graph("BruteKiller, "+ run, edge_numbers, iterations, survivors)
+    logging.info("Iterations: " + str(sum(iterations) / len(iterations)))
+    logging.info("Survivers:  " + str(sum(survivors) / len(survivors)) + "%")
+    helpers.generate_tikz_graph("IterativeKiller, " + run, edge_numbers, iterations, survivors)
+    helpers.plot_result_graph("IterativeKiller, " + run, edge_numbers, iterations, survivors)
     logging.info("--------------------------------------------------------------------------------------")
     logging.info("--------------------------------------------------------------------------------------")
     logging.info("BacktrackKiller: ")
@@ -134,6 +110,77 @@ def run_tests(G, min_flow, max_cost, run):
         print("Finished")
     logging.info("Iterations: " + str(sum(iterations) / len(iterations)))
     logging.info("Survivers:  " + str(sum(survivors) / len(survivors)) + "%")
-    helpers.generate_tikz_graph("BacktrackKiller"+ run, edge_numbers, iterations, survivors)
-    helpers.plot_result_graph("BacktrackKiller"+ run, edge_numbers, iterations, survivors)
+    helpers.generate_tikz_graph("BacktrackKiller" + run, edge_numbers, iterations, survivors)
+    helpers.plot_result_graph("BacktrackKiller" + run, edge_numbers, iterations, survivors)
+    '''
+    logging.info("--------------------------------------------------------------------------------------")
+    logging.info("Random: ")
+    edge_numbers = []
+    iterations = []
+    survivors = []
+    for i, graph in enumerate(G):
+        logging.info(f'Processing file: {i}')
+        logging.info("Number of Edges: " + str(G[i].number_of_edges()))
+        edge_numbers.append(G[i].number_of_edges())
+        iteration, survivor = RandomKiller.random_killer(G[i], max_cost[i], min_flow[i])
+        iterations.append(iteration)
+        survivors.append(survivor)
+        logging.info("")
+        print("Finished")
+    helpers.generate_tikz_graph("Random, "+ run, edge_numbers, iterations, survivors)
+    helpers.plot_result_graph("Random, "+ run, edge_numbers, iterations, survivors)
+    logging.info("--------------------------------------------------------------------------------------")
+    logging.info("BruteKiller: ")
+    edge_numbers = []
+    iterations = []
+    survivors = []
+    for i, graph in enumerate(G):
+        logging.info(f'Processing file: {i}')
+        logging.info("Number of Edges: " + str(G[i].number_of_edges()))
+        edge_numbers.append(G[i].number_of_edges())
+        iteration, survivor = BruteKiller.brute_killer(G[i], max_cost[i], min_flow[i])
+        iterations.append(iteration)
+        survivors.append(survivor)
+        logging.info("")
+        print("Finished")
+    helpers.generate_tikz_graph("BruteKiller, "+ run, edge_numbers, iterations, survivors)
+    helpers.plot_result_graph("BruteKiller, "+ run, edge_numbers, iterations, survivors)
+    logging.info("--------------------------------------------------------------------------------------")
+    logging.info("DynamicKiller: ")
+    edge_numbers = []
+    iterations = []
+    survivors = []
+    for i, graph in enumerate(G):
+        logging.info(f'Processing file: {i}')
+        logging.info("Number of Edges: " + str(G[i].number_of_edges()))
+        edge_numbers.append(G[i].number_of_edges())
+        iteration, survivor = DynamicKiller.dynamic_killer(G[i], max_cost[i], min_flow[i])
+        iterations.append(iteration)
+        survivors.append(survivor)
+        logging.info("")
+        print("Finished")
+    logging.info("Iterations: "+ str(sum(iterations) / len(iterations)))
+    logging.info("Survivers:  "+str(sum(survivors) / len(survivors))+"%")
+    helpers.generate_tikz_graph("DynamicKiller, "+ run, edge_numbers, iterations, survivors)
+    helpers.plot_result_graph("DynamicKiller, "+ run, edge_numbers, iterations, survivors)
+    
+
+    logging.info("--------------------------------------------------------------------------------------")
+    logging.info("Greedykiller: ")
+    edge_numbers = []
+    iterations = []
+    survivors = []
+    for i, graph in enumerate(G):
+        logging.info(f'Processing file: '+ str(i))
+        logging.info("Number of Edges: " + str(G[i].number_of_edges()))
+        edge_numbers.append(G[i].number_of_edges())
+        iteration, survivor = GreedyKiller.compute_link_failures(G[i])
+        iterations.append(iteration)
+        survivors.append(survivor)
+        logging.info("")
+        print("Finished")
+    logging.info(sum(survivors)/len(survivors))
+    logging.info(sum(iterations) / len(iterations))
+    helpers.generate_tikz_graph("Greedykiller, "+ run, edge_numbers, iterations, survivors)
+    helpers.plot_result_graph("Greedykiller, "+ run, edge_numbers, iterations, survivors)
     '''
